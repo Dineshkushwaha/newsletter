@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_name
+    - node.type.newsletter
+  module:
+    - allowed_formats
+    - text
+third_party_settings:
+  allowed_formats:
+    plain_text: plain_text
+    basic_html: '0'
+    custom_byline: '0'
+    rich_text: '0'
+id: node.newsletter.field_name
+field_name: field_name
+entity_type: node
+bundle: newsletter
+label: 'Name (The title of the email)'
+description: ''
+required: true
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: text

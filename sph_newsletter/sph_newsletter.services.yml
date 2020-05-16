@@ -1,0 +1,4 @@
+services:
+  sph_newsletter.emarsys_services:
+    class: Drupal\sph_newsletter\Services\EmarsysService
+    autowire: true

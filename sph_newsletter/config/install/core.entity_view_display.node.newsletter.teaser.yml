@@ -1,0 +1,41 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - core.entity_view_mode.node.teaser
+    - field.field.node.newsletter.body
+    - field.field.node.newsletter.field_email_category
+    - field.field.node.newsletter.field_from_email
+    - field.field.node.newsletter.field_from_name
+    - field.field.node.newsletter.field_language
+    - field.field.node.newsletter.field_name
+    - field.field.node.newsletter.field_queue_articles
+    - node.type.newsletter
+  module:
+    - text
+    - user
+id: node.newsletter.teaser
+targetEntityType: node
+bundle: newsletter
+mode: teaser
+content:
+  body:
+    label: hidden
+    type: text_summary_or_trimmed
+    weight: 101
+    settings:
+      trim_length: 600
+    third_party_settings: {  }
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_email_category: true
+  field_from_email: true
+  field_from_name: true
+  field_language: true
+  field_name: true
+  field_queue_articles: true
