@@ -3,15 +3,16 @@ status: true
 dependencies:
   module:
     - node
-id: node.field_queue_articles
-field_name: field_queue_articles
+id: node.field_production_segment_id
+field_name: field_production_segment_id
 entity_type: node
-type: entity_reference
+type: integer
 settings:
-  target_type: node
+  unsigned: false
+  size: normal
 module: core
 locked: false
-cardinality: -1
+cardinality: 1
 translatable: true
 indexes: {  }
 persist_with_no_fields: false

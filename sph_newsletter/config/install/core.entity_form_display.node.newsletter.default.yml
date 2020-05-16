@@ -8,7 +8,10 @@ dependencies:
     - field.field.node.newsletter.field_from_name
     - field.field.node.newsletter.field_language
     - field.field.node.newsletter.field_name
+    - field.field.node.newsletter.field_preview_segment_id
+    - field.field.node.newsletter.field_production_segment_id
     - field.field.node.newsletter.field_queue_articles
+    - field.field.node.newsletter.layout_builder__layout
     - node.type.newsletter
   module:
     - allowed_formats
@@ -25,6 +28,8 @@ third_party_settings:
         - field_from_email
         - field_from_name
         - field_email_category
+        - field_preview_segment_id
+        - field_production_segment_id
       parent_name: ''
       weight: 10
       format_type: tab
@@ -100,6 +105,20 @@ content:
         hide_guidelines: '1'
     type: text_textfield
     region: content
+  field_preview_segment_id:
+    weight: 16
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_production_segment_id:
+    weight: 17
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
   field_queue_articles:
     weight: 26
     settings:
@@ -167,4 +186,5 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
-hidden: {  }
+hidden:
+  layout_builder__layout: true

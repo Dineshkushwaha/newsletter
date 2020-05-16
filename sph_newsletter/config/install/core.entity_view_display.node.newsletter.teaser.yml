@@ -9,11 +9,53 @@ dependencies:
     - field.field.node.newsletter.field_from_name
     - field.field.node.newsletter.field_language
     - field.field.node.newsletter.field_name
+    - field.field.node.newsletter.field_preview_segment_id
+    - field.field.node.newsletter.field_production_segment_id
     - field.field.node.newsletter.field_queue_articles
+    - field.field.node.newsletter.layout_builder__layout
     - node.type.newsletter
   module:
+    - layout_builder
+    - layout_discovery
     - text
     - user
+third_party_settings:
+  layout_builder:
+    allow_custom: false
+    enabled: true
+    sections:
+      -
+        layout_id: layout_onecol
+        layout_settings:
+          label: ''
+        components:
+          762f8c90-35a0-4169-be55-b18da66843be:
+            uuid: 762f8c90-35a0-4169-be55-b18da66843be
+            region: content
+            configuration:
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              id: 'extra_field_block:node:newsletter:links'
+            additional: {  }
+            weight: 0
+          3befcae7-cd17-4551-b703-a67520e2548d:
+            uuid: 3befcae7-cd17-4551-b703-a67520e2548d
+            region: content
+            configuration:
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              id: 'field_block:node:newsletter:body'
+              formatter:
+                label: hidden
+                type: text_summary_or_trimmed
+                settings:
+                  trim_length: 600
+                third_party_settings: {  }
+            additional: {  }
+            weight: 1
+        third_party_settings: {  }
 id: node.newsletter.teaser
 targetEntityType: node
 bundle: newsletter
@@ -38,4 +80,7 @@ hidden:
   field_from_name: true
   field_language: true
   field_name: true
+  field_preview_segment_id: true
+  field_production_segment_id: true
   field_queue_articles: true
+  layout_builder__layout: true
