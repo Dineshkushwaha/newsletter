@@ -6,24 +6,23 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-
 /**
  * Class EmarsysService.
  */
-
 class EmarsysService {
+
   /**
    * EmarsysService constructor.
-   * @param ConfigFactoryInterface $config_factory
+   *
+   * \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   * \Drupal\Core\Messenger\MessengerInterface $messenger.
    */
-
   public function __construct(ConfigFactoryInterface $config_factory, MessengerInterface $messenger) {
     $this->config = $config_factory->get('sph_newsletter.settings');
     $this->messenger = $messenger;
   }
 
   /**
-   * @param $emarsysValues
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
@@ -33,19 +32,25 @@ class EmarsysService {
     );
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function previewNewsletter($emarsysValues) {
 
     $emarsys_api_env = $this->config->get('sph_newsletter.emarsys_api_env');
 
-    $recipient = json_encode(array(
-        'filter_id' => $emarsysValues['filter'],
-    ));
+    $recipient = json_encode([
+      'filter_id' => $emarsysValues['filter'],
+    ]);
 
-    $preview_email_id = $this->newsletter_doCurl($emarsys_api_env . "/api/v2/email", json_encode($emarsysValues), 'POST');
-    $url = $this->newsletter_doCurl($emarsys_api_env . "/api/v2/email/". $preview_email_id ."/sendtestmail", $recipient,'POST');
+    $preview_email_id = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email", json_encode($emarsysValues), 'POST');
+    $url = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $preview_email_id . "/sendtestmail", $recipient, 'POST');
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function launchNewsletter() {
 
   }
@@ -53,7 +58,7 @@ class EmarsysService {
   /**
    * Implements curl method.
    */
-  public function newsletter_doCurl($url, $param = NULL, $method = NULL) {
+  public function newsLetterDoCurl($url, $param = NULL, $method = NULL) {
 
     $emarsys_api_user = $this->config->get('sph_newsletter.emarsys_api_user');
     $emarsys_api_pass = $this->config->get('sph_newsletter.emarsys_api_pass');
@@ -72,19 +77,20 @@ class EmarsysService {
     curl_setopt($process, CURLOPT_HEADER, FALSE);
     curl_setopt($process, CURLOPT_SSL_VERIFYPEER, FALSE);
     curl_setopt($process, CURLOPT_RETURNTRANSFER, TRUE);
-    $content = array();
+    $content = [];
     $content['output'] = curl_exec($process);
     $content['status_code'] = curl_getinfo($process, CURLINFO_HTTP_CODE);
 
     $accData = json_decode($content['output']);
 
-    if( $content['status_code'] == 200 ) {
+    if ($content['status_code'] == 200) {
       $this->messenger->addStatus('Your NewsLetter is launched...');
-    } else {
+    }
+    else {
       $this->messenger->addWarning('Warning : ' . $accData->replyText);
     }
 
-    if($accData->data != '' || !isset($accData->data)) {
+    if ($accData->data != '' || !isset($accData->data)) {
       $newsLetterId = $accData->data;
       return $newsLetterId->id;
     }
@@ -99,12 +105,11 @@ class EmarsysService {
     $nonce_ts = date('c');
     $password_digest = base64_encode(sha1($nonce . $nonce_ts . $password));
     $jheader = [
-        "Content-Type: application/json",
-        "X-WSSE: UsernameToken Username=\"$username\""
-        . ", PasswordDigest=\"$password_digest\""
-        . ", Nonce=\"$nonce\""
-        . ", Created=\"$nonce_ts\"",
+      "Content-Type: application/json",
+      "X-WSSE: UsernameToken Username=\"$username\""
+      . ", PasswordDigest=\"$password_digest\"" . ", Nonce=\"$nonce\"" . ", Created=\"$nonce_ts\"",
     ];
+
     return $jheader;
   }
 

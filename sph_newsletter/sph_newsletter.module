@@ -1,40 +1,49 @@
 <?php
 
+/**
+ * @file
+ * {@inheritdoc}
+ */
+
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\node\Entity\Node;
 
-
-/*
- * Implements hook_form_alter
+/**
+ * Implements hook_form_alter().
  */
 function sph_newsletter_form_alter(&$form, FormStateInterface $form_state, $form_id) {
 
-    switch ($form_id) {
+  switch ($form_id) {
     case 'node_newsletter_edit_form':
-      $form['actions']['launch'] = array(
+      $form['actions']['launch'] = [
         '#type' => 'submit',
         '#weight' => 999,
-        '#limit_validation_errors' => array(),
+        '#limit_validation_errors' => [],
         '#button_type' => 'submit',
-        '#submit' => array(
-          'sph_newsletter_node_form_submit'
-        ),
+        '#submit' => [
+          'sph_newsletter_node_form_submit',
+        ],
         '#value' => t('Launch'),
-      );
+      ];
       break;
   }
 }
 
+/**
+ * {@inheritDoc}
+ */
 function sph_newsletter_node_form_submit(&$form, FormStateInterface $form_state) {
 
   $nid = $form_state->getFormObject()->getEntity()->id();
-  $emarsysValues = getEmarsysData($nid);
+  $emarsysValues = get_emarsys_data($nid);
 
   $service = \Drupal::service('sph_newsletter.emarsys_services');
   $service->previewNewsletter($emarsysValues);
 }
 
-function getEmarsysData($nid) {
+/**
+ * {@inheritDoc}
+ */
+function get_emarsys_data($nid) {
 
   $entity_type = 'node';
   $view_mode = 'full';
@@ -48,16 +57,16 @@ function getEmarsysData($nid) {
              </html>";
 
   $newsLetterValues = [
-      'name' => ($node->hasField('field_name')) ? $node->field_name->value . "_" . date('dmy_his') : '',
-      'subject' => "hello subject",
-      'language' => ($node->hasField('field_language')) ? $node->field_language->value : '',
-      'fromemail' => ($node->hasField('field_from_email')) ? $node->field_from_email->value : '',
-      'fromname' => ($node->hasField('field_from_name')) ? $node->field_from_name->value : '',
-      'html_source' => $result,
-      'browse' => 0,
-      'text_only' => 0,
-      'unsubscribe' => 1,
-      'filter' => ($node->hasField('field_preview_segment_id')) ? $node->field_preview_segment_id->value : '',
+    'name' => ($node->hasField('field_name')) ? $node->field_name->value . "_" . date('dmy_his') : '',
+    'subject' => "hello subject",
+    'language' => ($node->hasField('field_language')) ? $node->field_language->value : '',
+    'fromemail' => ($node->hasField('field_from_email')) ? $node->field_from_email->value : '',
+    'fromname' => ($node->hasField('field_from_name')) ? $node->field_from_name->value : '',
+    'html_source' => $result,
+    'browse' => 0,
+    'text_only' => 0,
+    'unsubscribe' => 1,
+    'filter' => ($node->hasField('field_preview_segment_id')) ? $node->field_preview_segment_id->value : '',
   ];
   return $newsLetterValues;
 }
