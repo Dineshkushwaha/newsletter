@@ -57,7 +57,7 @@ function getEmarsysData($nid) {
       'browse' => 0,
       'text_only' => 0,
       'unsubscribe' => 1,
-      'filter' => 221963
+      'filter' => ($node->hasField('field_preview_segment_id')) ? $node->field_preview_segment_id->value : '',
   ];
   return $newsLetterValues;
 }
