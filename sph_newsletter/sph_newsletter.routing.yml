@@ -1,0 +1,7 @@
+sph_newsletter.preview_page:
+  path: '/preview/{nid}'
+  defaults:
+    _controller: '\Drupal\sph_newsletter\Controller\PreviewNewsletterController::previewPage'
+    _title: 'Newsletter Drupal Preview Page'
+  requirements:
+    _permission: 'access content'
