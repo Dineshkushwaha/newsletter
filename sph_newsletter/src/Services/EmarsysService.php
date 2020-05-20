@@ -47,10 +47,19 @@ class EmarsysService {
     // If email campaign was created.
     if (isset($campaign_content->data->id)) {
       $newsLetterId = $campaign_content->data->id;
-      //Launch Newsletter
-      $launch = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $newsLetterId . "/sendtestmail", $recipient, 'POST');
-      if ($launch->replyCode === 0) {
-        $this->messenger->addStatus('Your NewsLetter is launched');
+      if ($emarsysValues['action'] == 'launch') {
+        // Launch Newsletter.
+        $launch = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $newsLetterId . "/launch", $recipient, 'POST');
+        if ($launch->replyCode === 0) {
+          $this->messenger->addStatus('Your NewsLetter is launched');
+        }
+      }
+      else {
+        // Preview Email Newsletter.
+        $preview_email = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $newsLetterId . "/sendtestmail", $recipient, 'POST');
+        if ($preview_email->replyCode === 0) {
+          $this->messenger->addStatus('Your Email Preview is sent');
+        }
       }
     }
   }

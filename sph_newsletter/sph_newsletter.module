@@ -16,6 +16,7 @@ function sph_newsletter_form_alter(&$form, FormStateInterface $form_state, $form
   switch ($form_id) {
     case 'node_newsletter_edit_form':
       $form['actions']['launch'] = [
+        '#name' => 'launch',
         '#type' => 'submit',
         '#weight' => 999,
         '#limit_validation_errors' => [],
@@ -24,6 +25,19 @@ function sph_newsletter_form_alter(&$form, FormStateInterface $form_state, $form
           'sph_newsletter_node_form_submit',
         ],
         '#value' => t('Launch'),
+        '#attributes' => ['onclick' => 'if(!confirm("Do you really want to launch?")){return false;}'],
+      ];
+      $form['actions']['preview_email'] = [
+          '#name' => 'preview_email',
+          '#type' => 'submit',
+          '#weight' => 999,
+          '#limit_validation_errors' => [],
+          '#button_type' => 'submit',
+          '#submit' => [
+              'sph_newsletter_node_form_submit',
+          ],
+          '#value' => t('Preview Email'),
+          '#attributes' => ['onclick' => 'if(!confirm("Do you really want to Preview the Email?")){return false;}'],
       ];
       break;
   }
@@ -35,7 +49,9 @@ function sph_newsletter_form_alter(&$form, FormStateInterface $form_state, $form
 function sph_newsletter_node_form_submit(&$form, FormStateInterface $form_state) {
 
   $nid = $form_state->getFormObject()->getEntity()->id();
-  $emarsysValues = get_emarsys_data($nid);
+  $actions = $form_state->getTriggeringElement()['#name'];
+  $emarsysValues = get_emarsys_data($nid, $actions);
+  $emarsysValues['action'] = $actions;
 
   $service = \Drupal::service('sph_newsletter.emarsys_services');
   $service->previewNewsletter($emarsysValues);
@@ -44,7 +60,7 @@ function sph_newsletter_node_form_submit(&$form, FormStateInterface $form_state)
 /**
  * {@inheritDoc}
  */
-function get_emarsys_data($nid) {
+function get_emarsys_data($nid, $action) {
 
   $build = new PreviewNewsletterController;
   $newsletter_html = $build->getHTML($nid);
@@ -58,7 +74,7 @@ function get_emarsys_data($nid) {
     'fromname' => ($node->hasField('field_from_name')) ? $node->field_from_name->value : '',
     'html_source' => (string) $newsletter_html['newsletter_data'],
     'unsubscribe' => 1,
-    'filter' => ($node->hasField('field_preview_segment_id')) ? $node->field_preview_segment_id->value : '',
+    'filter' => ($action == 'launch' && ($node->hasField('field_preview_segment_id') || $node->hasField('field_production_segment_id'))) ? $node->field_production_segment_id->value : $node->field_preview_segment_id->value,
   ];
   return $newsLetterValues;
 }
