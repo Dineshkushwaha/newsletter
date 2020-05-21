@@ -3,6 +3,7 @@ namespace Drupal\sph_newsletter\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\HttpFoundation\Response;
+use Pelago\Emogrifier\CssInliner;
 
 /**
  * Provides route responses for the Example module.
@@ -38,8 +39,11 @@ class PreviewNewsletterController extends ControllerBase {
 
     $newsletter_data = \Drupal::service('renderer')->renderPlain($renderable); // html output
 
+    $newsletter_data = (string) $newsletter_data;
+    $visualHtml = CssInliner::fromHtml($newsletter_data)->inlineCss()->render();
+
     $newsletter_html = [
-      'newsletter_data' => $newsletter_data,
+      'newsletter_data' => $visualHtml,
       'node' => $node,
     ];
 

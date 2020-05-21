@@ -37,7 +37,6 @@ function sph_newsletter_form_alter(&$form, FormStateInterface $form_state, $form
               'sph_newsletter_node_form_submit',
           ],
           '#value' => t('Preview Email'),
-          '#attributes' => ['onclick' => 'if(!confirm("Do you really want to Preview the Email?")){return false;}'],
       ];
       break;
   }
