@@ -99,7 +99,8 @@ class EmarsysService {
     $accData = json_decode($content['output']);
     if ($content['status_code'] == 200) {
       return $accData;
-    } else {
+    }
+    else {
       $this->messenger->addError('Error' . $accData->replyCode . ':' . $accData->replyText);
       return $accData;
     }
