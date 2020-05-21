@@ -46,10 +46,6 @@ function sph_newsletter_form_alter(&$form, FormStateInterface $form_state, $form
  * {@inheritDoc}
  */
 function sph_newsletter_node_form_submit(&$form, FormStateInterface $form_state) {
-  $module_handler = Drupal::service('module_handler');
-  $path = $module_handler->getModule('sph_newsletter')->getPath();
-  print_r($path);exit;
-
   $nid = $form_state->getFormObject()->getEntity()->id();
   $actions = $form_state->getTriggeringElement()['#name'];
   $emarsysValues = get_emarsys_data($nid, $actions);
