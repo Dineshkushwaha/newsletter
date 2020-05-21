@@ -31,10 +31,15 @@ class PreviewNewsletterController extends ControllerBase {
     $storage = \Drupal::entityTypeManager()->getStorage($entity_type);
     $node = $storage->load($nid);
     $build = $builder->view($node, $view_mode);
+    $cssFile = ($node->hasField('field_css_file_name')) ? $node->field_css_file_name->value : '';
+    $module_path = drupal_get_path('module', 'sph_newsletter');
+
 
     $renderable = [
       '#theme' => 'newsletter__preview',
       '#result' => $build,
+      '#cssFile' => $cssFile,
+      '#module_path' => $module_path,
     ];
 
     $newsletter_data = \Drupal::service('renderer')->renderPlain($renderable); // html output
