@@ -82,8 +82,6 @@ function sph_newsletter_theme($existing, $type, $theme, $path) {
     'newsletter__preview' => [
       'variables' => [
         'result' => NULL,
-        'cssFile' => NULL,
-        'module_path' => NULL,
       ],
     ],
   ];

@@ -18,6 +18,7 @@ class PreviewNewsletterController extends ControllerBase {
    */
   public function previewPage($nid) {
 
+    // Generate the HTML and dislay Preview Web Page
     $newsletter_html = $this->getHTML($nid);
     $response = new Response();
     $response->setContent($newsletter_html['newsletter_data']);
@@ -25,6 +26,8 @@ class PreviewNewsletterController extends ControllerBase {
   }
 
   public function getHTML($nid) {
+
+    // From the Nid get the Node layout builder output.
     $entity_type = 'node';
     $view_mode = 'full';
     $builder = \Drupal::entityTypeManager()->getViewBuilder($entity_type);
@@ -33,19 +36,21 @@ class PreviewNewsletterController extends ControllerBase {
     $build = $builder->view($node, $view_mode);
     $cssFile = ($node->hasField('field_css_file_name')) ? $node->field_css_file_name->value : '';
     $module_path = drupal_get_path('module', 'sph_newsletter');
-
+    $host = \Drupal::request()->getSchemeAndHttpHost();
 
     $renderable = [
       '#theme' => 'newsletter__preview',
       '#result' => $build,
-      '#cssFile' => $cssFile,
-      '#module_path' => $module_path,
     ];
 
+    // generate the rendered HTML from the twig file
     $newsletter_data = \Drupal::service('renderer')->renderPlain($renderable); // html output
-
     $newsletter_data = (string) $newsletter_data;
-    $visualHtml = CssInliner::fromHtml($newsletter_data)->inlineCss()->render();
+
+    //Converting External css to Inline Css using Emogrifier
+    $css_path = $host . '/' . $module_path . '/css/' . $cssFile;
+    $css_content = file_get_contents($css_path);
+    $visualHtml = CssInliner::fromHtml($newsletter_data)->inlineCss($css_content)->render();
 
     $newsletter_html = [
       'newsletter_data' => $visualHtml,
