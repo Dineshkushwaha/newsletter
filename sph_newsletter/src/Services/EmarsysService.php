@@ -43,9 +43,25 @@ class EmarsysService {
       'filter_id' => $emarsysValues['filter'],
     ]);
 
-    $preview_email_id = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email", json_encode($emarsysValues), 'POST');
-    $url = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $preview_email_id . "/sendtestmail", $recipient, 'POST');
-
+    $campaign_content = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email", json_encode($emarsysValues), 'POST');
+    // If email campaign was created.
+    if (isset($campaign_content->data->id)) {
+      $newsLetterId = $campaign_content->data->id;
+      if ($emarsysValues['action'] == 'launch') {
+        // Launch Newsletter.
+        $launch = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $newsLetterId . "/launch", $recipient, 'POST');
+        if ($launch->replyCode === 0) {
+          $this->messenger->addStatus('Your NewsLetter is launched');
+        }
+      }
+      else {
+        // Preview Email Newsletter.
+        $preview_email = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $newsLetterId . "/sendtestmail", $recipient, 'POST');
+        if ($preview_email->replyCode === 0) {
+          $this->messenger->addStatus('Your Email Preview is sent');
+        }
+      }
+    }
   }
 
   /**
@@ -80,19 +96,12 @@ class EmarsysService {
     $content = [];
     $content['output'] = curl_exec($process);
     $content['status_code'] = curl_getinfo($process, CURLINFO_HTTP_CODE);
-
     $accData = json_decode($content['output']);
-
     if ($content['status_code'] == 200) {
-      $this->messenger->addStatus('Your NewsLetter is launched...');
-    }
-    else {
-      $this->messenger->addWarning('Warning : ' . $accData->replyText);
-    }
-
-    if ($accData->data != '' || !isset($accData->data)) {
-      $newsLetterId = $accData->data;
-      return $newsLetterId->id;
+      return $accData;
+    } else {
+      $this->messenger->addError('Error' . $accData->replyCode . ':' . $accData->replyText);
+      return $accData;
     }
   }
 
