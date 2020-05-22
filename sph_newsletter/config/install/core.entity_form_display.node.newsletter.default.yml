@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - field.field.node.newsletter.body
+    - field.field.node.newsletter.field_css_file_name
     - field.field.node.newsletter.field_email_category
     - field.field.node.newsletter.field_from_email
     - field.field.node.newsletter.field_from_name
@@ -11,6 +12,7 @@ dependencies:
     - field.field.node.newsletter.field_preview_segment_id
     - field.field.node.newsletter.field_production_segment_id
     - field.field.node.newsletter.field_queue_articles
+    - field.field.node.newsletter.field_subject
     - field.field.node.newsletter.layout_builder__layout
     - node.type.newsletter
   module:
@@ -31,7 +33,7 @@ third_party_settings:
         - field_preview_segment_id
         - field_production_segment_id
       parent_name: ''
-      weight: 10
+      weight: 11
       format_type: tab
       region: content
       format_settings:
@@ -62,6 +64,14 @@ content:
     region: content
     settings: {  }
     third_party_settings: {  }
+  field_css_file_name:
+    weight: 26
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
   field_email_category:
     weight: 15
     settings:
@@ -120,7 +130,7 @@ content:
     type: number
     region: content
   field_queue_articles:
-    weight: 26
+    weight: 12
     settings:
       match_operator: CONTAINS
       match_limit: 10
@@ -128,6 +138,14 @@ content:
       placeholder: ''
     third_party_settings: {  }
     type: entity_reference_autocomplete
+    region: content
+  field_subject:
+    weight: 10
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
     region: content
   path:
     type: path

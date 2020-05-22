@@ -3,6 +3,7 @@ status: true
 dependencies:
   config:
     - field.field.node.newsletter.body
+    - field.field.node.newsletter.field_css_file_name
     - field.field.node.newsletter.field_email_category
     - field.field.node.newsletter.field_from_email
     - field.field.node.newsletter.field_from_name
@@ -11,6 +12,7 @@ dependencies:
     - field.field.node.newsletter.field_preview_segment_id
     - field.field.node.newsletter.field_production_segment_id
     - field.field.node.newsletter.field_queue_articles
+    - field.field.node.newsletter.field_subject
     - field.field.node.newsletter.layout_builder__layout
     - node.type.newsletter
   module:
@@ -181,6 +183,38 @@ third_party_settings:
                 type: number_integer
             additional: {  }
             weight: 9
+          8ad37eeb-5062-407d-9dd9-7e4b7dbc1e3a:
+            uuid: 8ad37eeb-5062-407d-9dd9-7e4b7dbc1e3a
+            region: content
+            configuration:
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              id: 'field_block:node:newsletter:field_subject'
+              formatter:
+                label: above
+                settings:
+                  link_to_entity: false
+                third_party_settings: {  }
+                type: string
+            additional: {  }
+            weight: 10
+          d13eea76-038b-4830-b617-d5f65bd33932:
+            uuid: d13eea76-038b-4830-b617-d5f65bd33932
+            region: content
+            configuration:
+              label_display: '0'
+              context_mapping:
+                entity: layout_builder.entity
+              id: 'field_block:node:newsletter:field_css_file_name'
+              formatter:
+                label: above
+                settings:
+                  link_to_entity: false
+                third_party_settings: {  }
+                type: string
+            additional: {  }
+            weight: 11
         third_party_settings: {  }
 id: node.newsletter.default
 targetEntityType: node
@@ -193,6 +227,14 @@ content:
     weight: 101
     settings: {  }
     third_party_settings: {  }
+    region: content
+  field_css_file_name:
+    weight: 111
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
     region: content
   field_email_category:
     weight: 106
@@ -257,6 +299,14 @@ content:
       link: true
     third_party_settings: {  }
     type: entity_reference_label
+    region: content
+  field_subject:
+    weight: 110
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
     region: content
   links:
     weight: 100
