@@ -53,7 +53,7 @@ function sph_newsletter_node_form_submit(&$form, FormStateInterface $form_state)
   $emarsysValues['action'] = $actions;
 
   $service = \Drupal::service('sph_newsletter.emarsys_services');
-  $service->previewNewsletter($emarsysValues);
+  $service->emarsysNewsletter($emarsysValues);
 }
 
 /**
