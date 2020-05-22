@@ -28,17 +28,17 @@ function sph_newsletter_form_alter(&$form, FormStateInterface $form_state, $form
         '#attributes' => ['onclick' => 'if(!confirm("Do you really want to launch?")){return false;}'],
       ];
       $form['actions']['preview_email'] = [
-          '#name' => 'preview_email',
-          '#type' => 'submit',
-          '#weight' => 999,
-          '#limit_validation_errors' => [],
-          '#button_type' => 'submit',
-          '#submit' => [
-              'sph_newsletter_node_form_submit',
-          ],
-          '#value' => t('Preview Email'),
-          '#attributes' => ['onclick' => 'if(!confirm("Do you really want to Preview the Email?")){return false;}'],
+        '#name' => 'preview_email',
+        '#type' => 'submit',
+        '#weight' => 999,
+        '#limit_validation_errors' => [],
+        '#button_type' => 'submit',
+        '#submit' => [
+          'sph_newsletter_node_form_submit',
+        ],
+        '#value' => t('Preview Email'),
       ];
+      $form['actions']['preview']['#submit'][] = 'sph_newsletter_node_preview';
       break;
   }
 }
@@ -47,7 +47,6 @@ function sph_newsletter_form_alter(&$form, FormStateInterface $form_state, $form
  * {@inheritDoc}
  */
 function sph_newsletter_node_form_submit(&$form, FormStateInterface $form_state) {
-
   $nid = $form_state->getFormObject()->getEntity()->id();
   $actions = $form_state->getTriggeringElement()['#name'];
   $emarsysValues = get_emarsys_data($nid, $actions);
@@ -62,7 +61,7 @@ function sph_newsletter_node_form_submit(&$form, FormStateInterface $form_state)
  */
 function get_emarsys_data($nid, $action) {
 
-  $build = new PreviewNewsletterController;
+  $build = new PreviewNewsletterController();
   $newsletter_html = $build->getHTML($nid);
   $node = $newsletter_html['node'];
 
@@ -72,13 +71,16 @@ function get_emarsys_data($nid, $action) {
     'language' => ($node->hasField('field_language')) ? $node->field_language->value : '',
     'fromemail' => ($node->hasField('field_from_email')) ? $node->field_from_email->value : '',
     'fromname' => ($node->hasField('field_from_name')) ? $node->field_from_name->value : '',
-    'html_source' => (string) $newsletter_html['newsletter_data'],
+    'html_source' => $newsletter_html['newsletter_data'],
     'unsubscribe' => 1,
     'filter' => ($action == 'launch' && ($node->hasField('field_preview_segment_id') || $node->hasField('field_production_segment_id'))) ? $node->field_production_segment_id->value : $node->field_preview_segment_id->value,
   ];
   return $newsLetterValues;
 }
 
+/**
+ * Implements hook_theme().
+ */
 function sph_newsletter_theme($existing, $type, $theme, $path) {
   return [
     'newsletter__preview' => [
@@ -89,3 +91,10 @@ function sph_newsletter_theme($existing, $type, $theme, $path) {
   ];
 }
 
+/**
+ * Callback function on click of Preview button.
+ */
+function sph_newsletter_node_preview($form, FormStateInterface $form_state) {
+  $nid = $form_state->getFormObject()->getEntity()->id();
+  $form_state->setRedirect('sph_newsletter.preview_page', ['nid' => $nid]);
+}
