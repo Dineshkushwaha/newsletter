@@ -18,10 +18,10 @@ class PreviewNewsletterController extends ControllerBase {
    */
   public function previewPage($nid) {
 
-
-    $values = \Drupal::entityQuery('node')->condition('nid', $nid)->execute();
+    //Check if it is a valid nids
+    $check_nids = \Drupal::entityQuery('node')->condition('nid', $nid)->execute();
     // Generate the HTML and dislay Preview Web Page
-    if (isset($values) && !empty($values)) {
+    if (isset($check_nids) && !empty($check_nids)) {
       $newsletter_html = $this->getHTML($nid);
       $response = new Response();
       $response->setContent($newsletter_html['newsletter_data']);
