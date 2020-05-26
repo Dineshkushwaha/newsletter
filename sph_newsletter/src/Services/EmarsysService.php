@@ -35,7 +35,7 @@ class EmarsysService {
   /**
    * {@inheritDoc}
    */
-  public function previewNewsletter($emarsysValues) {
+  public function emarsysNewsletter($emarsysValues) {
 
     $emarsys_api_env = $this->config->get('sph_newsletter.emarsys_api_env');
 
@@ -62,13 +62,6 @@ class EmarsysService {
         }
       }
     }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public function launchNewsletter() {
-
   }
 
   /**
