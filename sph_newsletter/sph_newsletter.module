@@ -4,40 +4,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\sph_newsletter\Controller\PreviewNewsletterController;
 
 /**
- * Submit action for Launch and Preview Email
- */
-function sph_newsletter_node_form_submit(&$form, FormStateInterface $form_state) {
-  $nid = $form_state->getFormObject()->getEntity()->id();
-  $actions = $form_state->getTriggeringElement()['#name'];
-  $emarsysValues = get_emarsys_data($nid, $actions);
-  $emarsysValues['action'] = $actions;
-
-  $service = \Drupal::service('sph_newsletter.emarsys_services');
-  $service->emarsysNewsletter($emarsysValues);
-}
-
-/**
- * Get the form submit data
- */
-function get_emarsys_data($nid, $action) {
-  $build = new PreviewNewsletterController;
-  $newsletter_html = $build->getHTML($nid);
-  $node = $newsletter_html['node'];
-
-  $newsLetterValues = [
-    'name' => ($node->hasField('field_name')) ? $node->field_name->value . "-" . date('Y-m-d h:i:s') : '',
-    'subject' => ($node->hasField('field_subject')) ? $node->field_subject->value : '',
-    'language' => ($node->hasField('field_language')) ? $node->field_language->value : '',
-    'fromemail' => ($node->hasField('field_from_email')) ? $node->field_from_email->value : '',
-    'fromname' => ($node->hasField('field_from_name')) ? $node->field_from_name->value : '',
-    'html_source' => $newsletter_html['newsletter_data'],
-    'unsubscribe' => 1,
-    'filter' => ($action == 'launch' && ($node->hasField('field_preview_segment_id') || $node->hasField('field_production_segment_id'))) ? $node->field_production_segment_id->value : $node->field_preview_segment_id->value,
-  ];
-  return $newsLetterValues;
-}
-
-/**
  * Implements hook_theme().
  */
 function sph_newsletter_theme($existing, $type, $theme, $path) {
@@ -48,13 +14,5 @@ function sph_newsletter_theme($existing, $type, $theme, $path) {
       ],
     ],
   ];
-}
-
-/**
- * Callback function on click of Preview button to set to preview/{nid}
- */
-function sph_newsletter_node_preview($form, FormStateInterface $form_state) {
-  $nid = $form_state->getFormObject()->getEntity()->id();
-  $form_state->setRedirect('sph_newsletter.preview_page', ['nid' => $nid]);
 }
 
