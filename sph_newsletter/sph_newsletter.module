@@ -30,7 +30,7 @@ function get_emarsys_data($nid, $action) {
     'language' => ($node->hasField('field_language')) ? $node->field_language->value : '',
     'fromemail' => ($node->hasField('field_from_email')) ? $node->field_from_email->value : '',
     'fromname' => ($node->hasField('field_from_name')) ? $node->field_from_name->value : '',
-    'nid' => $newsletter_html['newsletter_data'],
+    'html_source' => $newsletter_html['newsletter_data'],
     'unsubscribe' => 1,
     'filter' => ($action == 'launch' && ($node->hasField('field_preview_segment_id') || $node->hasField('field_production_segment_id'))) ? $node->field_production_segment_id->value : $node->field_preview_segment_id->value,
   ];
