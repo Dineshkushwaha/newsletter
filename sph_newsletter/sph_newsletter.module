@@ -1,8 +1,5 @@
 <?php
 
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\sph_newsletter\Controller\PreviewNewsletterController;
-
 /**
  * Implements hook_theme().
  */

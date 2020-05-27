@@ -4,6 +4,7 @@ services:
     autowire: true
   sph_newsletter.hook_form_alter:
     class: Drupal\sph_newsletter\EventSubscriber\NewsletterEventSubscriber
+    arguments: ['@entity_type.manager']
     autowire: true
     tags:
       - { name: 'event_subscriber' }

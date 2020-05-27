@@ -2,12 +2,17 @@
 
 namespace Drupal\sph_newsletter\EventSubscriber;
 
+use Pelago\Emogrifier\CssInliner;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\hook_event_dispatcher\HookEventDispatcherInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\sph_newsletter\Controller\PreviewNewsletterController;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 class NewsletterEventSubscriber implements EventSubscriberInterface {
+
+  public function __construct(EntityTypeManagerInterface $entity_type_manager) {
+    $this->entityTypeManager = $entity_type_manager;
+  }
 
 
   public static function getSubscribedEvents() {
@@ -69,8 +74,7 @@ class NewsletterEventSubscriber implements EventSubscriberInterface {
    * Get the form submit data
    */
   public function get_emarsys_data($nid, $action) {
-
-    $newsletter_html = $this->previewNewsletter->getHTML($nid);
+    $newsletter_html =  $this->getHTML($nid);
     $node = $newsletter_html['node'];
 
     $newsLetterValues = [
@@ -92,6 +96,40 @@ class NewsletterEventSubscriber implements EventSubscriberInterface {
   public function sph_newsletter_node_preview($form, FormStateInterface $form_state) {
     $nid = $form_state->getFormObject()->getEntity()->id();
     $form_state->setRedirect('sph_newsletter.preview_page', ['nid' => $nid]);
+  }
+
+  public function getHTML($nid) {
+    // From the Nid get the Node layout builder output.
+    $entity_type = 'node';
+    $view_mode = 'full';
+    $builder = $this->entityTypeManager->getViewBuilder($entity_type);
+    $storage = $this->entityTypeManager->getStorage($entity_type);
+    $node = $storage->load($nid);
+    $build = $builder->view($node, $view_mode);
+    $cssFile = ($node->hasField('field_css_file_name')) ? $node->field_css_file_name->value : '';
+    $module_path = drupal_get_path('module', 'sph_newsletter');
+    $host = \Drupal::request()->getSchemeAndHttpHost();
+
+    $renderable = [
+      '#theme' => 'newsletter__preview',
+      '#result' => $build,
+    ];
+
+    // generate the rendered HTML from the twig file
+    $newsletter_data = \Drupal::service('renderer')->renderPlain($renderable); // html output
+    $newsletter_data = (string)$newsletter_data;
+
+    //Converting External css to Inline Css using Emogrifier
+    $css_path = $host . '/' . $module_path . '/css/' . $cssFile;
+    $css_content = file_get_contents($css_path);
+    $visualHtml = CssInliner::fromHtml($newsletter_data)->inlineCss($css_content)->render();
+
+    $newsletter_html = [
+      'newsletter_data' => $visualHtml,
+      'node' => $node,
+    ];
+
+    return $newsletter_html;
   }
 
 
