@@ -7,10 +7,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\hook_event_dispatcher\HookEventDispatcherInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 
 class NewsletterEventSubscriber implements EventSubscriberInterface {
 
-
+  use DependencySerializationTrait;
   /**
    *
    * @var $entity_type_manager
@@ -63,19 +64,8 @@ class NewsletterEventSubscriber implements EventSubscriberInterface {
         ],
         '#value' => t('Preview Email'),
       ];
-      $form['actions']['preview_web'] = [
-        '#name' => 'preview_web',
-        '#type' => 'submit',
-        '#weight' => 999,
-        '#limit_validation_errors' => [],
-        '#button_type' => 'submit',
-        '#submit' => [
-          [$this, 'sph_newsletter_node_preview'],
-        ],
-        '#value' => t('Preview Web'),
-      ];
       //Facing issue while using this Preview Button
-      //$form['actions']['preview']['#submit'][] = [$this, 'sph_newsletter_node_preview'];
+      $form['actions']['preview']['#submit'][] = [$this, 'sph_newsletter_node_preview'];
     }
   }
 
