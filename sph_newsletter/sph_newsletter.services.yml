@@ -2,3 +2,8 @@ services:
   sph_newsletter.emarsys_services:
     class: Drupal\sph_newsletter\Services\EmarsysService
     autowire: true
+  sph_newsletter.hook_form_alter:
+    class: Drupal\sph_newsletter\EventSubscriber\NewsletterEventSubscriber
+    autowire: true
+    tags:
+      - { name: 'event_subscriber' }

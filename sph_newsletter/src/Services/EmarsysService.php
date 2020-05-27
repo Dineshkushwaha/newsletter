@@ -37,8 +37,10 @@ class EmarsysService {
    */
   public function emarsysNewsletter($emarsysValues) {
 
+    //Emarsys API details
     $emarsys_api_env = $this->config->get('sph_newsletter.emarsys_api_env');
 
+    //SegmentID Preview or Launch based on the submit action
     $recipient = json_encode([
       'filter_id' => $emarsysValues['filter'],
     ]);
@@ -69,6 +71,7 @@ class EmarsysService {
    */
   public function newsLetterDoCurl($url, $param = NULL, $method = NULL) {
 
+    //Emarsys API details
     $emarsys_api_user = $this->config->get('sph_newsletter.emarsys_api_user');
     $emarsys_api_pass = $this->config->get('sph_newsletter.emarsys_api_pass');
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Drupal\sph_newsletter\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
@@ -62,6 +63,9 @@ class PreviewNewsletterController extends ControllerBase {
     }
   }
 
+  /**
+   * Returns HTML page and $node object.
+   */
   public function getHTML($nid)
   {
     // From the Nid get the Node layout builder output.
