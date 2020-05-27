@@ -10,6 +10,17 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 
 class NewsletterEventSubscriber implements EventSubscriberInterface {
 
+
+  /**
+   *
+   * @var $entity_type_manager
+   */
+  protected $entity_type_manager;
+
+  /**
+   * NewsletterEventSubscriber constructor.
+   * @param EntityTypeManagerInterface $entity_type_manager
+   */
   public function __construct(EntityTypeManagerInterface $entity_type_manager) {
     $this->entityTypeManager = $entity_type_manager;
   }
@@ -52,7 +63,19 @@ class NewsletterEventSubscriber implements EventSubscriberInterface {
         ],
         '#value' => t('Preview Email'),
       ];
-      $form['actions']['preview']['#submit'][] = [$this, 'sph_newsletter_node_preview'];
+      $form['actions']['preview_web'] = [
+        '#name' => 'preview_web',
+        '#type' => 'submit',
+        '#weight' => 999,
+        '#limit_validation_errors' => [],
+        '#button_type' => 'submit',
+        '#submit' => [
+          [$this, 'sph_newsletter_node_preview'],
+        ],
+        '#value' => t('Preview Web'),
+      ];
+      //Facing issue while using this Preview Button
+      //$form['actions']['preview']['#submit'][] = [$this, 'sph_newsletter_node_preview'];
     }
   }
 

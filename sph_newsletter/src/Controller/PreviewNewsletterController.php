@@ -26,8 +26,7 @@ class PreviewNewsletterController extends ControllerBase {
   }
 
   /**
-   * @param ContainerInterface $container
-   * @return ControllerBase|PreviewNewsletterController
+   * {@inheritdoc}
    */
   public static function create(ContainerInterface $container)
   {
@@ -43,6 +42,7 @@ class PreviewNewsletterController extends ControllerBase {
    *   A simple renderable array.
    */
   public function previewPage($nid) {
+
     //Check if it is a valid nids
     $check_nids = \Drupal::entityQuery('node')->condition('nid', $nid)->execute();
     // Generate the HTML and dislay Preview Web Page
