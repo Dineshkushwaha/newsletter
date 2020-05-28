@@ -36,7 +36,7 @@ class PreviewNewsletterController extends ControllerBase {
   }
 
   /**
-   * Returns a simple page.
+   * Returns a simple Preview page.
    *
    * @return array
    *   A simple renderable array.
@@ -47,7 +47,8 @@ class PreviewNewsletterController extends ControllerBase {
     $check_nids = \Drupal::entityQuery('node')->condition('nid', $nid)->execute();
     // Generate the HTML and dislay Preview Web Page
     if (isset($check_nids) && !empty($check_nids)) {
-      $newsletter_html = $this->newsletterEvent->getHTML($nid);
+      $service = \Drupal::service('sph_newsletter.html_output');
+      $newsletter_html = $service->getHTML($nid);
       $response = new Response();
       $response->setContent($newsletter_html['newsletter_data']);
       return $response;
