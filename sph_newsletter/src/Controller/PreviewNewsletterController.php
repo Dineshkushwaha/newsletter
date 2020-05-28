@@ -4,7 +4,7 @@ namespace Drupal\sph_newsletter\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Drupal\sph_newsletter\EventSubscriber\NewsletterEventSubscriber;
+use Drupal\sph_newsletter\Services\HtmlOutput;
 
 /**
  * Provides route responses for the Example module.
@@ -13,16 +13,16 @@ class PreviewNewsletterController extends ControllerBase {
 
   /**
    *
-   * @var NewsletterEventSubscriber
+   * @var HtmlOutput
    */
-  protected $newsletterEvent;
+  protected $htmlOutput;
 
   /**
    * PreviewNewsletterController constructor.
-   * @param NewsletterEventSubscriber $newsletterEvent
+   * @param HtmlOutput $htmlOutput Service
    */
-  public function __construct(NewsletterEventSubscriber $newsletterEvent) {
-    $this->newsletterEvent = $newsletterEvent;
+  public function __construct(HtmlOutput $htmlOutput) {
+    $this->htmlOutput = $htmlOutput;
   }
 
   /**
@@ -31,7 +31,7 @@ class PreviewNewsletterController extends ControllerBase {
   public static function create(ContainerInterface $container)
   {
     return new static(
-      $container->get('sph_newsletter.hook_form_alter')
+      $container->get('sph_newsletter.html_output')
     );
   }
 
@@ -47,8 +47,7 @@ class PreviewNewsletterController extends ControllerBase {
     $check_nids = \Drupal::entityQuery('node')->condition('nid', $nid)->execute();
     // Generate the HTML and dislay Preview Web Page
     if (isset($check_nids) && !empty($check_nids)) {
-      $service = \Drupal::service('sph_newsletter.html_output');
-      $newsletter_html = $service->getHTML($nid);
+      $newsletter_html = $this->htmlOutput->getHTML($nid);
       $response = new Response();
       $response->setContent($newsletter_html['newsletter_data']);
       return $response;
