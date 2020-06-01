@@ -5,3 +5,19 @@ sph_newsletter.preview_page:
     _title: 'Newsletter Drupal Preview Page'
   requirements:
     _permission: 'access content'
+
+sph_newsletter.edit_newsletter_article_page:
+  path: 'admin/config/edit/newsletter_article/{nid}'
+  defaults:
+    _form: '\Drupal\sph_newsletter\Form\EditArticleConfigForm'
+    _title: 'Article Edit Page'
+  requirements:
+    _permission: 'access content'
+
+sph_newsletter.edit_article:
+  path: '/admin/config/structure/articles/edit/{id}'
+  defaults:
+    _title: 'Edit Article'
+    _form: '\Drupal\sph_newsletter\Form\ArticleEditForm'
+  requirements:
+    _permission: 'access content'
