@@ -7,15 +7,15 @@ sph_newsletter.preview_page:
     _permission: 'access content'
 
 sph_newsletter.edit_newsletter_article_page:
-  path: 'admin/config/edit/newsletter_article/{nid}'
+  path: '/admin/config/article-list/{nid}'
   defaults:
     _form: '\Drupal\sph_newsletter\Form\ArticleEditListForm'
-    _title: 'Article Edit Page'
+    _title: 'Queue Article List'
   requirements:
     _permission: 'access content'
 
 sph_newsletter.edit_article:
-  path: '/admin/config/structure/articles/edit/{id}'
+  path: 'admin/config/article-edit/{id}'
   defaults:
     _title: 'Edit Article'
     _form: '\Drupal\sph_newsletter\Form\ArticleEditConfigForm'
