@@ -21,8 +21,7 @@ class ArticleEditForm extends ConfigFormBase {
     ];
 
   }
-  public function buildForm(array $form, FormStateInterface $form_state)
-  {
+  public function buildForm(array $form, FormStateInterface $form_state) {
     $nid = \Drupal::routeMatch()->getParameter('id');
     $node = Node::load($nid);
 
@@ -52,7 +51,14 @@ class ArticleEditForm extends ConfigFormBase {
           '#default_value' => !empty($config->get($nid . '_body')) ? $config->get($nid . '_body') : $body,
           '#description' => t("Summary description"),
       ];
-    return parent::buildForm($form, $form_state);
+      $form['back'] = array(
+        '#type' => 'button',
+        '#value' => t('Back to Article List'),
+        '#attributes' => array(
+            'onclick' => 'window.history.back();return false;',
+        ),
+      );
+      return parent::buildForm($form, $form_state);
   }
 
   /**

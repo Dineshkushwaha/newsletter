@@ -55,6 +55,13 @@ class EditArticleConfigForm extends FormBase {
           'url' => Url::fromRoute('sph_newsletter.edit_article', array('id' => $articles['target_id'])),
       );
     }
+    $form['back'] = array(
+        '#type' => 'button',
+        '#value' => t('Back to Newsletter'),
+        '#attributes' => array(
+            'onclick' => 'window.history.back();return false;',
+        ),
+    );
     return $form;
   }
 
