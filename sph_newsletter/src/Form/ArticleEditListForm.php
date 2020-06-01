@@ -9,10 +9,10 @@ use Drupal\node\Entity\Node;
 
 
 /**
- * Class EditArticleConfigForm
+ * Class ArticleEditListForm
  * @package Drupal\sph_newsletter\Form
  */
-class EditArticleConfigForm extends FormBase {
+class ArticleEditListForm extends FormBase {
   const SETTINGS = 'queArticle.settings';
 
   public function getFormId()
@@ -24,7 +24,10 @@ class EditArticleConfigForm extends FormBase {
   {
     $nid = \Drupal::routeMatch()->getParameter('nid');
     $node = Node::load($nid);
+    //Get the Queue articles from the node
     $queueArticles = $node->get('field_queue_articles')->getValue();
+    $config = $this->config(static::SETTINGS);
+
     $form['article_data'] = [
         '#type' => 'table',
         '#header' => array(t('ID'), t('Title'), t('Summary'), t('Edit')),
@@ -36,7 +39,6 @@ class EditArticleConfigForm extends FormBase {
       $node = Node::load($articles['target_id']);
       $title = $node->getTitle();
       $body = $node->field_subheadline->value;
-      $config = $this->config(static::SETTINGS);
       $form['article_data'][$articles['target_id']]['id'] = array(
           '#plain_text' => $articles['target_id'],
       );

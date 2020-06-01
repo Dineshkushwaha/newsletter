@@ -6,7 +6,11 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\Entity\Node;
 
-class ArticleEditForm extends ConfigFormBase {
+/**
+ * Class ArticleEditConfigForm
+ * @package Drupal\sph_newsletter\Form
+ */
+class ArticleEditConfigForm extends ConfigFormBase {
   const SETTINGS = 'queArticle.settings';
 
   public function getFormId()
@@ -31,34 +35,34 @@ class ArticleEditForm extends ConfigFormBase {
         '#open' => TRUE,
         '#tree' => TRUE,
     ];
-      $title = $node->getTitle();
-      $body = $node->field_subheadline->value;
-      $config = $this->config(static::SETTINGS);
-      $form['article_data'][$nid . '_nid'] = [
-          '#type' => 'textfield',
-          '#title' => t('Queue Article ID'),
-          '#default_value' => $nid,
-      ];
-      $form['article_data'][$nid . '_title'] = [
-          '#type' => 'textfield',
-          '#title' => t('Queue Article title'),
-          '#default_value' => !empty($config->get($nid . '_title')) ? $config->get($nid . '_title') : $title,
-          '#description' => t("Title field"),
-      ];
-      $form['article_data'][$nid . '_body'] = [
-          '#type' => 'textarea',
-          '#title' => t('Queue Article summary'),
-          '#default_value' => !empty($config->get($nid . '_body')) ? $config->get($nid . '_body') : $body,
-          '#description' => t("Summary description"),
-      ];
-      $form['back'] = array(
-        '#type' => 'button',
-        '#value' => t('Back to Article List'),
-        '#attributes' => array(
-            'onclick' => 'window.history.back();return false;',
-        ),
-      );
-      return parent::buildForm($form, $form_state);
+    $title = $node->getTitle();
+    $body = $node->field_subheadline->value;
+    $config = $this->config(static::SETTINGS);
+    $form['article_data'][$nid . '_nid'] = [
+        '#type' => 'textfield',
+        '#title' => t('Queue Article ID'),
+        '#default_value' => $nid,
+    ];
+    $form['article_data'][$nid . '_title'] = [
+        '#type' => 'textfield',
+        '#title' => t('Queue Article title'),
+        '#default_value' => !empty($config->get($nid . '_title')) ? $config->get($nid . '_title') : $title,
+        '#description' => t("Title field"),
+    ];
+    $form['article_data'][$nid . '_body'] = [
+        '#type' => 'textarea',
+        '#title' => t('Queue Article summary'),
+        '#default_value' => !empty($config->get($nid . '_body')) ? $config->get($nid . '_body') : $body,
+        '#description' => t("Summary description"),
+    ];
+    $form['back'] = array(
+      '#type' => 'button',
+      '#value' => t('Back to Article List'),
+      '#attributes' => array(
+          'onclick' => 'window.history.back();return false;',
+      ),
+    );
+    return parent::buildForm($form, $form_state);
   }
 
   /**

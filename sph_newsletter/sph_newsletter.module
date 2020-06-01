@@ -16,10 +16,10 @@ function sph_newsletter_theme($existing, $type, $theme, $path) {
 /**
  * Implement the hook_views_pre_render()
  */
-function sph_newsletter_views_pre_render(\Drupal\views\ViewExecutable $view)  {
+function sph_newsletter_views_pre_render(\Drupal\views\ViewExecutable $view) {
   if($view->id() == 'lifestyle_view'){
+    $config = \Drupal::config('queArticle.settings');
     foreach($view->result as $result){
-      $config = \Drupal::config('queArticle.settings');
       $nid = $result->_relationship_entities['field_queue_articles']->id();
       $entity_type = 'node';
       $storage = \Drupal::entityTypeManager()->getStorage($entity_type);
