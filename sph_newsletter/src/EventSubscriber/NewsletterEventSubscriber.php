@@ -91,7 +91,7 @@ class NewsletterEventSubscriber implements EventSubscriberInterface {
     $nid = $form_state->getFormObject()->getEntity()->id();
     $form_state->setRedirect('sph_newsletter.edit_newsletter_article_page', ['nid' => $nid]);
   }
-  
+
   /**
    * Get the form submit data
    */

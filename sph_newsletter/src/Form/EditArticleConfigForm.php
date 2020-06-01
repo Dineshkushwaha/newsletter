@@ -13,12 +13,11 @@ use Drupal\node\Entity\Node;
  * @package Drupal\sph_newsletter\Form
  */
 class EditArticleConfigForm extends FormBase {
-  const SETTINGS = 'example.settings';
+  const SETTINGS = 'queArticle.settings';
 
   public function getFormId()
   {
     return 'article_edit_form';
-    // TODO: Implement getFormId() method.
   }
 
   public function buildForm(array $form, FormStateInterface $form_state)

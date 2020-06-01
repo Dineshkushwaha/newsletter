@@ -7,17 +7,15 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\Entity\Node;
 
 class ArticleEditForm extends ConfigFormBase {
-  const SETTINGS = 'example.settings';
+  const SETTINGS = 'queArticle.settings';
 
   public function getFormId()
   {
     return 'article_edit_form';
-    // TODO: Implement getFormId() method.
   }
 
   public function getEditableConfigNames()
   {
-    // TODO: Implement getEditableConfigNames() method.
     return [
         static::SETTINGS,
     ];
@@ -25,7 +23,6 @@ class ArticleEditForm extends ConfigFormBase {
   }
   public function buildForm(array $form, FormStateInterface $form_state)
   {
-    // TODO: Implement buildForm() method.
     $nid = \Drupal::routeMatch()->getParameter('id');
     $node = Node::load($nid);
 
