@@ -53,6 +53,18 @@ class NewsletterEventSubscriber implements EventSubscriberInterface {
         ],
         '#value' => t('Preview Email'),
       ];
+      //Edit article button
+      $form['actions']['edit_article'] = [
+          '#name' => 'edit_article',
+          '#type' => 'submit',
+          '#weight' => 999,
+          '#limit_validation_errors' => [],
+          '#button_type' => 'submit',
+          '#submit' => [
+              [$this, 'sph_newsletter_edit_article'],
+          ],
+          '#value' => t('Edit Article'),
+      ];
       // Preview Web button
       $form['actions']['preview']['#submit'][] = [$this, 'sph_newsletter_node_preview'];
       $form['actions']['preview']['#value'] = t('Preview Web');
@@ -72,6 +84,13 @@ class NewsletterEventSubscriber implements EventSubscriberInterface {
     $service->emarsysNewsletter($emarsysValues);
   }
 
+  /**
+   * Callback function on click of Edit article button.
+   */
+  function sph_newsletter_edit_article($form, FormStateInterface $form_state) {
+    $nid = $form_state->getFormObject()->getEntity()->id();
+    $form_state->setRedirect('sph_newsletter.edit_newsletter_article_page', ['nid' => $nid]);
+  }
 
   /**
    * Get the form submit data
