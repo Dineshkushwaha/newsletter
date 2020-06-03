@@ -5,29 +5,43 @@ namespace Drupal\sph_newsletter\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\Entity\Node;
+use Drupal\Core\Url;
 
 /**
  * Class ArticleEditConfigForm
  * @package Drupal\sph_newsletter\Form
  */
 class ArticleEditConfigForm extends ConfigFormBase {
+  /**
+   * Queue Article settings.
+   */
   const SETTINGS = 'queArticle.settings';
 
+  /**
+   * {@inheritDoc}
+   */
   public function getFormId()
   {
     return 'article_edit_form';
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function getEditableConfigNames()
   {
     return [
         static::SETTINGS,
     ];
-
   }
+
+  /**
+   * {@inheritDoc}
+   */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $nid = \Drupal::routeMatch()->getParameter('id');
-    $node = Node::load($nid);
+    $nid = \Drupal::routeMatch()->getParameter('nid');
+    $id = \Drupal::routeMatch()->getParameter('id');
+    $node = Node::load($id);
 
     $form['article_data'] = [
         '#type' => 'details',
@@ -38,29 +52,30 @@ class ArticleEditConfigForm extends ConfigFormBase {
     $title = $node->getTitle();
     $body = $node->field_subheadline->value;
     $config = $this->config(static::SETTINGS);
-    $form['article_data'][$nid . '_nid'] = [
+    $form['article_data'][$nid .'_'. $id . '_nid'] = [
         '#type' => 'textfield',
         '#title' => t('Queue Article ID'),
-        '#default_value' => $nid,
+        '#default_value' => $id,
     ];
-    $form['article_data'][$nid . '_title'] = [
+    $form['article_data'][$nid .'_'. $id . '_title'] = [
         '#type' => 'textfield',
         '#title' => t('Queue Article title'),
-        '#default_value' => !empty($config->get($nid . '_title')) ? $config->get($nid . '_title') : $title,
+        '#default_value' => !empty($config->get($nid .'_'. $id . '_title')) ? $config->get($nid .'_'. $id . '_title') : $title,
         '#description' => t("Title field"),
     ];
-    $form['article_data'][$nid . '_body'] = [
+    $form['article_data'][$nid .'_'. $id . '_body'] = [
         '#type' => 'textarea',
         '#title' => t('Queue Article summary'),
-        '#default_value' => !empty($config->get($nid . '_body')) ? $config->get($nid . '_body') : $body,
+        '#default_value' => !empty($config->get($nid .'_'. $id . '_body')) ? $config->get($nid .'_'. $id . '_body') : $body,
         '#description' => t("Summary description"),
     ];
-    $form['back'] = array(
-      '#type' => 'button',
-      '#value' => t('Back to Article List'),
-      '#attributes' => array(
-          'onclick' => 'window.history.back();return false;',
-      ),
+    $form['actions']['operations'] = array(
+        '#type' => 'operations',
+        '#links' => array(),
+    );
+    $form['actions']['operations']['#links']['back'] = array(
+        'title' => t('Back to Edit Article'),
+        'url' => URL::fromRoute('sph_newsletter.edit_newsletter_article_page', ['nid' => $nid], []),
     );
     return parent::buildForm($form, $form_state);
   }

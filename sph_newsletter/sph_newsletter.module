@@ -18,6 +18,7 @@ function sph_newsletter_theme($existing, $type, $theme, $path) {
  */
 function sph_newsletter_views_pre_render(\Drupal\views\ViewExecutable $view) {
   if($view->id() == 'lifestyle_view'){
+    $id = \Drupal::routeMatch()->getParameter('nid');
     $config = \Drupal::config('queArticle.settings');
     foreach($view->result as $result){
       $nid = $result->_relationship_entities['field_queue_articles']->id();
@@ -26,8 +27,8 @@ function sph_newsletter_views_pre_render(\Drupal\views\ViewExecutable $view) {
       $node = $storage->load($nid);
       $title = $node->getTitle();
       $body = $node->field_subheadline->value;
-      $node->title->value = !empty($config->get($nid . '_title')) ? $config->get($nid . '_title') : $title;
-      $node->field_subheadline->value = !empty($config->get($nid . '_body')) ? $config->get($nid . '_body') : $body;
+      $node->title->value = !empty($config->get($id .'_'. $nid . '_title')) ? $config->get($id .'_'. $nid . '_title') : $title;
+      $node->field_subheadline->value = !empty($config->get($id .'_'. $nid . '_body')) ? $config->get($id .'_'. $nid . '_body') : $body;
     }
   }
 }

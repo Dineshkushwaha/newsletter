@@ -25,6 +25,9 @@ class NewsletterEventSubscriber implements EventSubscriberInterface {
   public function hookFormAlter(&$event) {
     if ($event->getFormId() === 'node_newsletter_edit_form') {
 
+      // Get the node id from the URL
+      $nid = \Drupal::routeMatch()->getParameter('nid');
+
       //Get the Form using Hook Event Dispatcher methods
       $form = &$event->getForm();
 
@@ -54,17 +57,14 @@ class NewsletterEventSubscriber implements EventSubscriberInterface {
         '#value' => t('Preview Email'),
       ];
       //Edit article button
-      $form['actions']['edit_article'] = [
-          '#name' => 'edit_article',
-          '#type' => 'submit',
-          '#weight' => 999,
-          '#limit_validation_errors' => [],
-          '#button_type' => 'submit',
-          '#submit' => [
-              [$this, 'sph_newsletter_edit_article'],
-          ],
-          '#value' => t('Edit Article'),
-      ];
+      $form['actions']['operations'] = array(
+          '#type' => 'operations',
+          '#links' => array(),
+      );
+      $form['actions']['operations']['#links']['edit'] = array(
+          'title' => t('Edit article'),
+          'url' => Url::fromRoute('sph_newsletter.edit_newsletter_article_page', array('nid' => $nid)),
+      );
       // Preview Web button
       $form['actions']['preview']['#submit'][] = [$this, 'sph_newsletter_node_preview'];
       $form['actions']['preview']['#value'] = t('Preview Web');
