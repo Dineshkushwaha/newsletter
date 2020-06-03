@@ -69,14 +69,13 @@ class ArticleEditConfigForm extends ConfigFormBase {
         '#default_value' => !empty($config->get($nid .'_'. $id . '_body')) ? $config->get($nid .'_'. $id . '_body') : $body,
         '#description' => t("Summary description"),
     ];
-    $form['actions']['operations'] = array(
-        '#type' => 'operations',
-        '#links' => array(),
-    );
-    $form['actions']['operations']['#links']['back'] = array(
-        'title' => t('Back to Edit Article'),
-        'url' => URL::fromRoute('sph_newsletter.edit_newsletter_article_page', ['nid' => $nid], []),
-    );
+    $form['actions']['article-list'] = [
+      '#title' => 'Article List',
+      '#type' => 'link',
+      '#url' => Url::fromRoute('sph_newsletter.edit_newsletter_article_page', array('nid' => $nid)),
+      '#attributes' => array('class' => array('button')),
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 

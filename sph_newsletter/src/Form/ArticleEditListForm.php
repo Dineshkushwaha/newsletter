@@ -66,14 +66,13 @@ class ArticleEditListForm extends FormBase {
           'url' => Url::fromRoute('sph_newsletter.edit_article', array('id' => $articles['target_id'], 'nid' => $nid)),
       );
     }
-    $form['actions'] = array(
-        '#type' => 'operations',
-        '#links' => array(),
-    );
-    $form['actions']['#links']['back'] = array(
-        'title' => t('Back to Newsletter'),
-        'url' => URL::fromRoute('entity.node.edit_form', ['node' => $nid], []),
-    );
+    $form['actions']['edit-article'] = [
+      '#title' => t('Back to Newsletter'),
+      '#type' => 'link',
+      '#url' => Url::fromRoute('entity.node.edit_form', ['node' => $nid]),
+      '#attributes' => array('class' => array('button')),
+    ];
+
     return $form;
   }
 

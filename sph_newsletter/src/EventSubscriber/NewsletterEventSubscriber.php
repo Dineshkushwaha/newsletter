@@ -5,6 +5,7 @@ namespace Drupal\sph_newsletter\EventSubscriber;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\hook_event_dispatcher\HookEventDispatcherInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 class NewsletterEventSubscriber implements EventSubscriberInterface {
 
@@ -26,7 +27,11 @@ class NewsletterEventSubscriber implements EventSubscriberInterface {
     if ($event->getFormId() === 'node_newsletter_edit_form') {
 
       // Get the node id from the URL
-      $nid = \Drupal::routeMatch()->getParameter('nid');
+      $node = \Drupal::routeMatch()->getParameter('node');
+      if ($node instanceof \Drupal\node\NodeInterface) {
+        // You can get nid and anything else you need from the node object.
+        $nid = $node->id();
+      }
 
       //Get the Form using Hook Event Dispatcher methods
       $form = &$event->getForm();
@@ -56,16 +61,15 @@ class NewsletterEventSubscriber implements EventSubscriberInterface {
         ],
         '#value' => t('Preview Email'),
       ];
-      //Edit article button
-      $form['actions']['operations'] = array(
-          '#type' => 'operations',
-          '#links' => array(),
-      );
-      $form['actions']['operations']['#links']['edit'] = array(
-          'title' => t('Edit article'),
-          'url' => Url::fromRoute('sph_newsletter.edit_newsletter_article_page', array('nid' => $nid)),
-      );
-      // Preview Web button
+
+      //Edit Article
+      $form['actions']['edit-article'] = [
+        '#title' => 'Edit Article',
+        '#type' => 'link',
+        '#url' => Url::fromRoute('sph_newsletter.edit_newsletter_article_page', array('nid' => $nid)),
+        '#attributes' => array('class' => array('button')),
+      ];
+
       $form['actions']['preview']['#submit'][] = [$this, 'sph_newsletter_node_preview'];
       $form['actions']['preview']['#value'] = t('Preview Web');
     }
