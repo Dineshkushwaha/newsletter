@@ -61,7 +61,6 @@ class NewsletterEventSubscriber implements EventSubscriberInterface {
         ],
         '#value' => t('Preview Email'),
       ];
-
       //Edit Article
       $form['actions']['edit-article'] = [
         '#title' => 'Edit Article',

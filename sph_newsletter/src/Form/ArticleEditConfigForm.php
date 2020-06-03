@@ -56,6 +56,7 @@ class ArticleEditConfigForm extends ConfigFormBase {
         '#type' => 'textfield',
         '#title' => t('Queue Article ID'),
         '#default_value' => $id,
+        '#disabled' => TRUE,
     ];
     $form['article_data'][$nid .'_'. $id . '_title'] = [
         '#type' => 'textfield',
