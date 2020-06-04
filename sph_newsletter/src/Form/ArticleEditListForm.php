@@ -13,13 +13,22 @@ use Drupal\node\Entity\Node;
  * @package Drupal\sph_newsletter\Form
  */
 class ArticleEditListForm extends FormBase {
+  /**
+   * Queue article settings
+   */
   const SETTINGS = 'queArticle.settings';
 
+  /**
+   * {@inheritDoc}
+   */
   public function getFormId()
   {
     return 'article_edit_form';
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function buildForm(array $form, FormStateInterface $form_state)
   {
     $nid = \Drupal::routeMatch()->getParameter('nid');
@@ -43,10 +52,10 @@ class ArticleEditListForm extends FormBase {
           '#plain_text' => $articles['target_id'],
       );
       $form['article_data'][$articles['target_id']]['title'] = array(
-          '#plain_text' => !empty($config->get($articles['target_id'] . '_title')) ? $config->get($articles['target_id'] . '_title') : $title,
+          '#plain_text' => !empty($config->get($nid .'_'. $articles['target_id'] . '_title')) ? $config->get($nid .'_'. $articles['target_id'] . '_title') : $title,
       );
       $form['article_data'][$articles['target_id']]['body'] = array(
-          '#plain_text' => !empty($config->get($articles['target_id'] . '_body')) ? $config->get($articles['target_id'] . '_body') : $body,
+          '#plain_text' => !empty($config->get($nid .'_'. $articles['target_id'] . '_body')) ? $config->get($nid .'_'. $articles['target_id'] . '_body') : $body,
       );
       $form['article_data'][$articles['target_id']]['operations'] = array(
           '#type' => 'operations',
@@ -54,16 +63,16 @@ class ArticleEditListForm extends FormBase {
       );
       $form['article_data'][$articles['target_id']]['operations']['#links']['edit'] = array(
           'title' => t('Edit'),
-          'url' => Url::fromRoute('sph_newsletter.edit_article', array('id' => $articles['target_id'])),
+          'url' => Url::fromRoute('sph_newsletter.edit_article', array('id' => $articles['target_id'], 'nid' => $nid)),
       );
     }
-    $form['back'] = array(
-        '#type' => 'button',
-        '#value' => t('Back to Newsletter'),
-        '#attributes' => array(
-            'onclick' => 'window.history.back();return false;',
-        ),
-    );
+    $form['actions']['edit-article'] = [
+      '#title' => t('Back to Newsletter'),
+      '#type' => 'link',
+      '#url' => Url::fromRoute('entity.node.edit_form', ['node' => $nid]),
+      '#attributes' => array('class' => array('button')),
+    ];
+
     return $form;
   }
 
