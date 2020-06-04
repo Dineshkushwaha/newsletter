@@ -36,7 +36,6 @@ class HtmlOutput {
     $cssFile = ($node->hasField('field_css_file_name')) ? $node->field_css_file_name->value : '';
     $module_path = drupal_get_path('module', 'sph_newsletter');
     $host = \Drupal::request()->getSchemeAndHttpHost();
-    $renderable['#cache']['max-age'] = 0;
     $renderable = [
       '#theme' => 'newsletter__preview',
       '#result' => $build,
