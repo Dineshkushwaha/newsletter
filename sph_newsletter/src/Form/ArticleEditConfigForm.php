@@ -6,6 +6,8 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Url;
+use Drupal\media\Entity\Media;
+use Drupal\file\Entity\File;
 
 /**
  * Class ArticleEditConfigForm
@@ -51,6 +53,12 @@ class ArticleEditConfigForm extends ConfigFormBase {
     ];
     $title = $node->getTitle();
     $body = $node->field_subheadline->value;
+    $articleMedia = $node->get('field_media')->getValue();
+    $media = Media::load($articleMedia[0]['target_id']);
+    $fid = $media->field_media_image->target_id;
+    $file = File::load($fid);
+    $url = $file->url();
+
     $config = $this->config(static::SETTINGS);
     $form['article_data'][$nid .'_'. $id . '_nid'] = [
         '#type' => 'textfield',
@@ -69,6 +77,11 @@ class ArticleEditConfigForm extends ConfigFormBase {
         '#title' => t('Queue Article summary'),
         '#default_value' => !empty($config->get($nid .'_'. $id . '_body')) ? $config->get($nid .'_'. $id . '_body') : $body,
         '#description' => t("Summary description"),
+    ];
+    $form['article_data'][$nid .'_'. $id . '_media'] = [
+        '#type' => 'markup',
+        '#title' => t('Queue Article summary'),
+        '#markup' => '<img src="'. $url .'" alt="picture">',
     ];
     $form['actions']['article-list'] = [
       '#title' => 'Article List',

@@ -6,6 +6,8 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
+use Drupal\media\Entity\Media;
+use Drupal\file\Entity\File;
 
 
 /**
@@ -48,6 +50,12 @@ class ArticleEditListForm extends FormBase {
       $node = Node::load($articles['target_id']);
       $title = $node->getTitle();
       $body = $node->field_subheadline->value;
+      $articleMedia = $node->get('field_media')->getValue();
+      $media = Media::load($articleMedia[0]['target_id']);
+      $fid = $media->field_media_image->target_id;
+      $file = File::load($fid);
+      $url = $file->url();
+
       $form['article_data'][$articles['target_id']]['id'] = array(
           '#plain_text' => $articles['target_id'],
       );
@@ -56,6 +64,10 @@ class ArticleEditListForm extends FormBase {
       );
       $form['article_data'][$articles['target_id']]['body'] = array(
           '#plain_text' => !empty($config->get($nid .'_'. $articles['target_id'] . '_body')) ? $config->get($nid .'_'. $articles['target_id'] . '_body') : $body,
+      );
+      $form['article_data'][$articles['target_id']]['media'] = array(
+          '#type' => 'markup',
+          '#markup' => '<img src="'. $url .'" alt="picture" style="width:30px;height:30px;">',
       );
       $form['article_data'][$articles['target_id']]['operations'] = array(
           '#type' => 'operations',
