@@ -18,7 +18,12 @@ function sph_newsletter_theme($existing, $type, $theme, $path) {
  */
 function sph_newsletter_views_pre_render(\Drupal\views\ViewExecutable $view) {
   if($view->id() == 'lifestyle_view'){
-    $id = \Drupal::routeMatch()->getParameter('nid');
+    // Get the node id from the URL
+    $node = \Drupal::routeMatch()->getParameter('node');
+    if ($node instanceof \Drupal\node\NodeInterface) {
+      // You can get nid and anything else you need from the node object.
+      $id = $node->id();
+    }
     $config = \Drupal::config('queArticle.settings');
     foreach($view->result as $result){
       $nid = $result->_relationship_entities['field_queue_articles']->id();
