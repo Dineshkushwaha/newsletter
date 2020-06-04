@@ -83,6 +83,18 @@ class ArticleEditConfigForm extends ConfigFormBase {
         '#title' => t('Queue Article summary'),
         '#markup' => '<img src="'. $url .'" alt="picture">',
     ];
+    $validators = [
+      'file_validate_extensions' => ['png jpeg jpg'],
+    ];
+    $form['article_data'][$nid .'_'. $id . '_media'] = [
+      '#type' => 'managed_file',
+      '#title' => "Media Image",
+      '#size' => 20,
+      '#description' => t('png, jpeg & jpg format only'),
+      '#upload_validators' => $validators,
+      '#upload_location' => 'public://sph_newsletter/',
+      '#default_value' => $config->get($nid .'_'. $id . '_media'),
+    ];
     $form['actions']['article-list'] = [
       '#title' => 'Article List',
       '#type' => 'link',
