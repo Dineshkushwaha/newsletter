@@ -38,27 +38,48 @@ class EmarsysService {
   public function emarsysNewsletter($emarsysValues) {
 
     //Emarsys API details
+    $newsLetterId = '';
     $emarsys_api_env = $this->config->get('sph_newsletter.emarsys_api_env');
 
+    //Get the Preview Campaign session if it is available to update the campaign
+    $session = \Drupal::request()->getSession();
+    $preview_campaign = $session->get('preview_campaign');
     //SegmentID Preview or Launch based on the submit action
     $recipient = json_encode([
       'filter_id' => $emarsysValues['filter'],
     ]);
 
-    $campaign_content = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email", json_encode($emarsysValues), 'POST');
-    // If email campaign was created.
-    if (isset($campaign_content->data->id)) {
+    if (($emarsysValues['action'] === 'launch') || ($emarsysValues['action'] === 'preview_email' && empty($preview_campaign))) {
+      $campaign_content = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/", json_encode($emarsysValues), 'POST');
       $newsLetterId = $campaign_content->data->id;
+    }
+
+
+    //Update the preview campaign if session campaign already present
+    if ($emarsysValues['action'] === 'preview_email' && !empty($preview_campaign)) {
+      $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $preview_campaign . "/patch", json_encode($emarsysValues), 'POST');
+    }
+
+
+    // If email campaign was created.
+    if (isset($newsLetterId) || !empty($preview_campaign)) {
       if ($emarsysValues['action'] == 'launch') {
         // Launch Newsletter.
         $launch = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $newsLetterId . "/launch", $recipient, 'POST');
         if ($launch->replyCode === 0) {
           $this->messenger->addStatus('Your NewsLetter is launched');
+          //Remove the campaign once launched
+          $session->remove('preview_campaign');
         }
       }
       else {
+        if (empty($preview_campaign)) {
+          // Set the campaign for the Preview Email
+          $session->set('preview_campaign', $newsLetterId);
+        }
+        $preview_campaign = $session->get('preview_campaign');
         // Preview Email Newsletter.
-        $preview_email = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $newsLetterId . "/sendtestmail", $recipient, 'POST');
+        $preview_email = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $preview_campaign . "/sendtestmail", $recipient, 'POST');
         if ($preview_email->replyCode === 0) {
           $this->messenger->addStatus('Your Email Preview is sent');
         }
