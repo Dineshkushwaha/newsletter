@@ -112,6 +112,22 @@ class ArticleEditConfigForm extends ConfigFormBase {
     // Retrieve the configuration.
     $articles = $form_state->getValues();
     foreach ($articles['article_data'] as $key => $value) {
+      if (strpos ($key, 'media') == true) {
+        if (is_array($key)) {
+          $fid = (int)reset($value);
+          if($fid) {
+            $file = File::load($fid);
+            if (!$file->isPermanent()) {
+              $file->setPermanent();
+            }
+            $usage = $this->fileUsage->listUsage($file);
+            if (empty($usage)) {
+              $this->fileUsage->add($file, 'sph_newsletter', 'image', $fid);
+            }
+            $file->save();
+          }
+        }
+      }
       $warning_value = ['article_data', $key];
       $this->articleDataSave($form_state, $key , $warning_value);
     }

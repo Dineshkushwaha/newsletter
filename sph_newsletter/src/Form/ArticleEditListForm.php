@@ -41,7 +41,7 @@ class ArticleEditListForm extends FormBase {
 
     $form['article_data'] = [
         '#type' => 'table',
-        '#header' => array(t('ID'), t('Title'), t('Summary'), t('Edit')),
+        '#header' => array(t('ID'), t('Title'), t('Summary'), t('Image'), t('Edit')),
         '#title' => 'Article data configuration',
         '#open' => TRUE,
         '#tree' => TRUE,
@@ -69,13 +69,11 @@ class ArticleEditListForm extends FormBase {
           '#type' => 'markup',
           '#markup' => '<img src="'. $url .'" alt="picture" style="width:30px;height:30px;">',
       );
-      $form['article_data'][$articles['target_id']]['operations'] = array(
-          '#type' => 'operations',
-          '#links' => array(),
-      );
-      $form['article_data'][$articles['target_id']]['operations']['#links']['edit'] = array(
-          'title' => t('Edit'),
-          'url' => Url::fromRoute('sph_newsletter.edit_article', array('id' => $articles['target_id'], 'nid' => $nid)),
+      $form['article_data'][$articles['target_id']]['edit'] = array(
+          '#title' => t('Edit'),
+          '#type' => 'link',
+          '#url' => Url::fromRoute('sph_newsletter.edit_article', array('id' => $articles['target_id'], 'nid' => $nid)),
+          '#attributes' => array('class' => array('button')),
       );
     }
     $form['actions']['edit-article'] = [
