@@ -93,7 +93,7 @@ class ArticleEditConfigForm extends ConfigFormBase {
       '#description' => t('png, jpeg & jpg format only'),
       '#upload_validators' => $validators,
       '#upload_location' => 'public://sph_newsletter/',
-      '#default_value' => $config->get($nid .'_'. $id . '_media'),
+      '#default_value' => !empty($config->get($nid .'_'. $id . '_media')) ? $config->get($nid .'_'. $id . '_media') : [$fid],
     ];
     $form['actions']['article-list'] = [
       '#title' => 'Article List',
