@@ -53,7 +53,12 @@ class ArticleEditListForm extends FormBase {
       $articleMedia = $node->get('field_media')->getValue();
       $media = Media::load($articleMedia[0]['target_id']);
       $fid = $media->field_media_image->target_id;
-      $file = File::load($fid);
+      $config_fid = $config->get($nid .'_'. $articles['target_id'] . '_media');
+      if (isset($config_fid)) {
+        $file = File::load($config_fid[0]);
+      } else {
+        $file = File::load($fid);
+      }
       $url = $file->url();
 
       $form['article_data'][$articles['target_id']]['id'] = array(
