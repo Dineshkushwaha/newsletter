@@ -99,12 +99,12 @@ class EmarsysService {
     $emarsys_api_pass = $this->config->get('sph_newsletter.emarsys_api_pass');
 	  $client = \Drupal::httpClient();
     $options['headers'] = $this->jsonheader($emarsys_api_user, $emarsys_api_pass);
-    $options['form_params'] = [
+    $options['json'] = [
       'filter_id' => 221963,
     ];
 
 	  $response = $client->request($method, $url, $options);
-    print_r($response);exit;
+    $response = $response->getBody()->getContents();
     $accData = json_decode($response);
     if ($accData->replyCode == 0) {
       return $accData;
