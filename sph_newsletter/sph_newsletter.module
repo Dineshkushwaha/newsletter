@@ -37,6 +37,16 @@ function sph_newsletter_views_pre_render(\Drupal\views\ViewExecutable $view) {
       $body = $node->field_subheadline->value;
       $node->title->value = !empty($config->get($id .'_'. $nid . '_title')) ? $config->get($id .'_'. $nid . '_title') : $title;
       $node->field_subheadline->value = !empty($config->get($id .'_'. $nid . '_body')) ? $config->get($id .'_'. $nid . '_body') : $body;
+      $image_field = $node->field_media->first()->getValue();
+      $media = Drupal\media\Entity\Media::load($image_field['target_id']);
+      $fid = $media->field_media_image->target_id;
+      $config_fid = $config->get($id .'_'. $nid . '_media');
+      if (isset($config_fid)) {
+        $media->field_media_image->target_id = $config_fid[0];
+      } else {
+        $media->field_media_image->target_id = $fid;
+      }
+      $media->save();
     }
   }
 }

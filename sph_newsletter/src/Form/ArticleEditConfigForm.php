@@ -6,6 +6,8 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\Entity\Node;
 use Drupal\Core\Url;
+use Drupal\media\Entity\Media;
+use Drupal\file\Entity\File;
 
 /**
  * Class ArticleEditConfigForm
@@ -51,6 +53,12 @@ class ArticleEditConfigForm extends ConfigFormBase {
     ];
     $title = $node->getTitle();
     $body = $node->field_subheadline->value;
+    $articleMedia = $node->get('field_media')->getValue();
+    $media = Media::load($articleMedia[0]['target_id']);
+    $fid = $media->field_media_image->target_id;
+    $file = File::load($fid);
+    $url = $file->url();
+
     $config = $this->config(static::SETTINGS);
     $form['article_data'][$nid .'_'. $id . '_nid'] = [
         '#type' => 'textfield',
@@ -70,6 +78,23 @@ class ArticleEditConfigForm extends ConfigFormBase {
         '#default_value' => !empty($config->get($nid .'_'. $id . '_body')) ? $config->get($nid .'_'. $id . '_body') : $body,
         '#description' => t("Summary description"),
     ];
+    $form['article_data'][$nid .'_'. $id . '_media'] = [
+        '#type' => 'markup',
+        '#title' => t('Queue Article summary'),
+        '#markup' => '<img src="'. $url .'" alt="picture">',
+    ];
+    $validators = [
+      'file_validate_extensions' => ['png jpeg jpg'],
+    ];
+    $form['article_data'][$nid .'_'. $id . '_media'] = [
+      '#type' => 'managed_file',
+      '#title' => "Media Image",
+      '#size' => 20,
+      '#description' => t('png, jpeg & jpg format only'),
+      '#upload_validators' => $validators,
+      '#upload_location' => 'public://sph_newsletter/',
+      '#default_value' => !empty($config->get($nid .'_'. $id . '_media')) ? $config->get($nid .'_'. $id . '_media') : [$fid],
+    ];
     $form['actions']['article-list'] = [
       '#title' => 'Article List',
       '#type' => 'link',
@@ -87,6 +112,22 @@ class ArticleEditConfigForm extends ConfigFormBase {
     // Retrieve the configuration.
     $articles = $form_state->getValues();
     foreach ($articles['article_data'] as $key => $value) {
+      if (strpos ($key, 'media') == true) {
+        if (is_array($key)) {
+          $fid = (int)reset($value);
+          if($fid) {
+            $file = File::load($fid);
+            if (!$file->isPermanent()) {
+              $file->setPermanent();
+            }
+            $usage = $this->fileUsage->listUsage($file);
+            if (empty($usage)) {
+              $this->fileUsage->add($file, 'sph_newsletter', 'image', $fid);
+            }
+            $file->save();
+          }
+        }
+      }
       $warning_value = ['article_data', $key];
       $this->articleDataSave($form_state, $key , $warning_value);
     }
