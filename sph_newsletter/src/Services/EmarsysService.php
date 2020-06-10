@@ -53,14 +53,14 @@ class EmarsysService {
 
 
     if (($emarsysValues['action'] === 'launch') || ($emarsysValues['action'] === 'preview_email' && empty($preview_campaign))) {
-      $campaign_content = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/", json_encode($emarsysValues), 'POST');
+      $campaign_content = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/", $emarsysValues, 'POST');
       $newsLetterId = $campaign_content->data->id;
     }
 
 
     //Update the preview campaign if session campaign already present
     if ($emarsysValues['action'] === 'preview_email' && !empty($preview_campaign)) {
-      //$this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $preview_campaign . "/patch", json_encode($emarsysValues), 'POST');
+      $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $preview_campaign . "/patch", $emarsysValues, 'POST');
     }
 
 
