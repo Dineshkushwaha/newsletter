@@ -19,10 +19,9 @@ class EmarsysService {
    * \Drupal\Core\Config\ConfigFactoryInterface $config_factory
    * \Drupal\Core\Messenger\MessengerInterface $messenger.
    */
-  public function __construct(ConfigFactoryInterface $config_factory, MessengerInterface $messenger, Client $http_client) {
+  public function __construct(ConfigFactoryInterface $config_factory, MessengerInterface $messenger) {
     $this->config = $config_factory->get('sph_newsletter.settings');
     $this->messenger = $messenger;
-    $this->httpClient = $http_client;
   }
 
   /**
@@ -31,8 +30,7 @@ class EmarsysService {
   public static function create(ContainerInterface $container) {
     return new static(
         $container->get('config.factory'),
-        $container->get('messenger'),
-        $container->get('http_client')
+        $container->get('messenger')
     );
   }
 
