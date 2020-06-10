@@ -5,6 +5,8 @@ namespace Drupal\sph_newsletter\Services;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use GuzzleHttp\Client;
+
 
 /**
  * Class EmarsysService.
@@ -95,6 +97,13 @@ class EmarsysService {
     //Emarsys API details
     $emarsys_api_user = $this->config->get('sph_newsletter.emarsys_api_user');
     $emarsys_api_pass = $this->config->get('sph_newsletter.emarsys_api_pass');
+	
+	$client = \Drupal::httpClient();
+    $method = 'POST';
+    $options['headers'] = $this->jsonheader($emarsys_api_user, $emarsys_api_pass);
+	$response = $client->request($method, $url, $options);
+    $code = $response->getStatusCode();
+
 
     $process = curl_init($url);
     curl_setopt($process, CURLOPT_TIMEOUT, 30);
@@ -132,9 +141,9 @@ class EmarsysService {
     $nonce_ts = date('c');
     $password_digest = base64_encode(sha1($nonce . $nonce_ts . $password));
     $jheader = [
-      "Content-Type: application/json",
-      "X-WSSE: UsernameToken Username=\"$username\""
-      . ", PasswordDigest=\"$password_digest\"" . ", Nonce=\"$nonce\"" . ", Created=\"$nonce_ts\"",
+      'Content-Type' =>  'application/json',
+      'X-WSSE' => 'UsernameToken Username="' . $username . '"
+      , PasswordDigest="' . $password_digest .'", Nonce="' . $nonce . '", Created="' . $nonce_ts . '"',
     ];
 
     return $jheader;
