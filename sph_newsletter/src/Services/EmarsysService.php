@@ -47,9 +47,9 @@ class EmarsysService {
     $session = \Drupal::request()->getSession();
     $preview_campaign = $session->get('preview_campaign');
     //SegmentID Preview or Launch based on the submit action
-    $recipient = json_encode([
+    $recipient = [
       'filter_id' => $emarsysValues['filter'],
-    ]);
+    ];
 
 
     if (($emarsysValues['action'] === 'launch') || ($emarsysValues['action'] === 'preview_email' && empty($preview_campaign))) {
@@ -99,9 +99,7 @@ class EmarsysService {
     $emarsys_api_pass = $this->config->get('sph_newsletter.emarsys_api_pass');
 	  $client = \Drupal::httpClient();
     $options['headers'] = $this->jsonheader($emarsys_api_user, $emarsys_api_pass);
-    $options['json'] = [
-      'filter_id' => 221963,
-    ];
+    $options['json'] = $param;
 
 	  $response = $client->request($method, $url, $options);
     $response = $response->getBody()->getContents();
