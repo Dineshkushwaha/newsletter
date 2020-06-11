@@ -47,19 +47,20 @@ class EmarsysService {
     $session = \Drupal::request()->getSession();
     $preview_campaign = $session->get('preview_campaign');
     //SegmentID Preview or Launch based on the submit action
-    $recipient = json_encode([
+    $recipient = [
       'filter_id' => $emarsysValues['filter'],
-    ]);
+    ];
+
 
     if (($emarsysValues['action'] === 'launch') || ($emarsysValues['action'] === 'preview_email' && empty($preview_campaign))) {
-      $campaign_content = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/", json_encode($emarsysValues), 'POST');
+      $campaign_content = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/", $emarsysValues, 'POST');
       $newsLetterId = $campaign_content->data->id;
     }
 
 
     //Update the preview campaign if session campaign already present
     if ($emarsysValues['action'] === 'preview_email' && !empty($preview_campaign)) {
-      $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $preview_campaign . "/patch", json_encode($emarsysValues), 'POST');
+      $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $preview_campaign . "/patch", $emarsysValues, 'POST');
     }
 
 
@@ -93,37 +94,17 @@ class EmarsysService {
    * Implements curl method.
    */
   public function newsLetterDoCurl($url, $param = NULL, $method = NULL) {
-
     //Emarsys API details
     $emarsys_api_user = $this->config->get('sph_newsletter.emarsys_api_user');
     $emarsys_api_pass = $this->config->get('sph_newsletter.emarsys_api_pass');
-	
-	$client = \Drupal::httpClient();
-    $method = 'POST';
+	  $client = \Drupal::httpClient();
     $options['headers'] = $this->jsonheader($emarsys_api_user, $emarsys_api_pass);
-	$response = $client->request($method, $url, $options);
-    $code = $response->getStatusCode();
+    $options['json'] = $param;
 
-
-    $process = curl_init($url);
-    curl_setopt($process, CURLOPT_TIMEOUT, 30);
-    if ($method == 'POST' || $method == 'PUT') {
-      curl_setopt($process, CURLOPT_POST, TRUE);
-      curl_setopt($process, CURLOPT_POSTFIELDS, $param);
-      curl_setopt($process, CURLOPT_CUSTOMREQUEST, $method);
-    }
-    // Set json headers.
-    curl_setopt($process, CURLOPT_HTTPHEADER, $this->jsonheader($emarsys_api_user, $emarsys_api_pass));
-    // Because it will not work if we dont set this
-    // curl_setopt($process, CURLOPT_BINARYTRANSFER, 1);.
-    curl_setopt($process, CURLOPT_HEADER, FALSE);
-    curl_setopt($process, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($process, CURLOPT_RETURNTRANSFER, TRUE);
-    $content = [];
-    $content['output'] = curl_exec($process);
-    $content['status_code'] = curl_getinfo($process, CURLINFO_HTTP_CODE);
-    $accData = json_decode($content['output']);
-    if ($content['status_code'] == 200) {
+	  $response = $client->request($method, $url, $options);
+    $response = $response->getBody()->getContents();
+    $accData = json_decode($response);
+    if ($accData->replyCode == 0) {
       return $accData;
     }
     else {
