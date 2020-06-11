@@ -5,7 +5,6 @@ namespace Drupal\sph_newsletter\Services;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use GuzzleHttp\Client;
 
 
 /**
@@ -53,14 +52,14 @@ class EmarsysService {
 
 
     if (($emarsysValues['action'] === 'launch') || ($emarsysValues['action'] === 'preview_email' && empty($preview_campaign))) {
-      $campaign_content = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/", $emarsysValues, 'POST');
+      $campaign_content = $this->newsLetterData($emarsys_api_env . "/api/v2/email/", $emarsysValues, 'POST');
       $newsLetterId = $campaign_content->data->id;
     }
 
 
     //Update the preview campaign if session campaign already present
     if ($emarsysValues['action'] === 'preview_email' && !empty($preview_campaign)) {
-      $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $preview_campaign . "/patch", $emarsysValues, 'POST');
+      $this->newsLetterData($emarsys_api_env . "/api/v2/email/" . $preview_campaign . "/patch", $emarsysValues, 'POST');
     }
 
 
@@ -68,7 +67,7 @@ class EmarsysService {
     if (isset($newsLetterId) || !empty($preview_campaign)) {
       if ($emarsysValues['action'] == 'launch') {
         // Launch Newsletter.
-        $launch = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $newsLetterId . "/launch", $recipient, 'POST');
+        $launch = $this->newsLetterData($emarsys_api_env . "/api/v2/email/" . $newsLetterId . "/launch", $recipient, 'POST');
         if ($launch->replyCode === 0) {
           $this->messenger->addStatus('Your NewsLetter is launched');
           //Remove the campaign once launched
@@ -82,7 +81,7 @@ class EmarsysService {
         }
         $preview_campaign = $session->get('preview_campaign');
         // Preview Email Newsletter.
-        $preview_email = $this->newsLetterDoCurl($emarsys_api_env . "/api/v2/email/" . $preview_campaign . "/sendtestmail", $recipient, 'POST');
+        $preview_email = $this->newsLetterData($emarsys_api_env . "/api/v2/email/" . $preview_campaign . "/sendtestmail", $recipient, 'POST');
         if ($preview_email->replyCode === 0) {
           $this->messenger->addStatus('Your Email Preview is sent');
         }
@@ -93,7 +92,7 @@ class EmarsysService {
   /**
    * Implements curl method.
    */
-  public function newsLetterDoCurl($url, $param = NULL, $method = NULL) {
+  public function newsLetterData($url, $param = NULL, $method = NULL) {
     //Emarsys API details
     $emarsys_api_user = $this->config->get('sph_newsletter.emarsys_api_user');
     $emarsys_api_pass = $this->config->get('sph_newsletter.emarsys_api_pass');

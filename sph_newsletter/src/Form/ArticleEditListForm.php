@@ -8,6 +8,8 @@ use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
 use Drupal\media\Entity\Media;
 use Drupal\file\Entity\File;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Routing\CurrentRouteMatch;
 
 
 /**
@@ -19,6 +21,25 @@ class ArticleEditListForm extends FormBase {
    * Queue article settings
    */
   const SETTINGS = 'queArticle.settings';
+
+  protected $routematch;
+
+  /**
+   * ArticleEditListForm constructor.
+   */
+  public function __construct(CurrentRouteMatch $route_match) {
+    $this->routematch = $route_match;
+  }
+
+  /**
+   * @return FormBase|ArticleEditListForm
+   */
+  public static function create(ContainerInterface $container)
+  {
+    return new static(
+        $container->get('current_route_match')
+    );
+  }
 
   /**
    * {@inheritDoc}
@@ -33,7 +54,7 @@ class ArticleEditListForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state)
   {
-    $nid = \Drupal::routeMatch()->getParameter('nid');
+    $nid = $this->routematch->getParameter('nid');
     $node = Node::load($nid);
     //Get the Queue articles from the node
     $queueArticles = $node->get('field_queue_articles')->getValue();
@@ -54,7 +75,7 @@ class ArticleEditListForm extends FormBase {
       $media = Media::load($articleMedia[0]['target_id']);
       $fid = $media->field_media_image->target_id;
       $config_fid = $config->get($nid .'_'. $articles['target_id'] . '_media');
-      if (isset($config_fid)) {
+      if (!empty($config_fid)) {
         $file = File::load($config_fid[0]);
       } else {
         $file = File::load($fid);
