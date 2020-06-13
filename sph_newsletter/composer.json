@@ -1,0 +1,22 @@
+{
+  "name": "sphtech/sph_newsletter",
+  "description": "SPH Newsletter is used by Editors to send Daily newsletter",
+  "homepage": "https://github.com/Dineshkushwaha/newsletter",
+  "authors": [
+    {
+      "name": "Dinesh Kushwaha",
+      "homepage": "https://github.com/Dineshkushwaha",
+      "role": "Maintainer"
+    }
+  ],
+  "repositories": {
+    "drupal": {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    }
+  },
+  "require": {
+    "drupal/hook_event_dispatcher" : "^2.01",
+    "pelago/emogrifier": "v4.0"
+  }
+}

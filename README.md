@@ -2,19 +2,16 @@
 
 Installation steps: 
 
-1) Require hook_event_dispatcher module.
-Enable sub module core_event_dispatcher
+1) Run Composer install which will add the Emogrifier Libary dependency &
+hook_event_dispatcher module.
 
-2) Require Emogrifier Library to convert the internal css
-to inline. Use the below command to install
+2) Enable hook_event_dispatcher module.
+Enable sub module core_event_dispatcher
 
 3) We have stored the Emarsys credentials in config folder
 with name sph_newsletter.settings.yml. You can add the required details and proceed with the installation.
 
 
-```bash
-composer require pelago/emogrifier
-```
 ## Usage
 
 1) Create Newsletter from Newsletter Content Type with required

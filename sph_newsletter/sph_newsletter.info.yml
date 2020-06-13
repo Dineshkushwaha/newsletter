@@ -10,3 +10,4 @@ dependencies:
   - media
   - node
   - user
+  - hook_event_dispatcher
