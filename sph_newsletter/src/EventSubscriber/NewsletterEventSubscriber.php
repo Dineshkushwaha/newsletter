@@ -2,12 +2,33 @@
 
 namespace Drupal\sph_newsletter\EventSubscriber;
 
+use Drupal\Core\Routing\CurrentRouteMatch;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Drupal\hook_event_dispatcher\HookEventDispatcherInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 class NewsletterEventSubscriber implements EventSubscriberInterface {
+
+  protected $routematch;
+
+  /**
+   * NewsletterEventSubscriber constructor.
+   */
+  public function __construct(CurrentRouteMatch $route_match) {
+    $this->routematch = $route_match;
+  }
+
+  /**
+   * @param ContainerInterface $container
+   * @return NewsletterEventSubscriber
+   */
+  public static function create(ContainerInterface $container)
+  {
+    return new static(
+        $container->get('current_route_match')
+    );
+  }
 
   /*
    * Subscribe the events using HookEventDispatcherInterface
@@ -27,7 +48,7 @@ class NewsletterEventSubscriber implements EventSubscriberInterface {
     if ($event->getFormId() === 'node_newsletter_edit_form') {
 
       // Get the node id from the URL
-      $node = \Drupal::routeMatch()->getParameter('node');
+      $node = $this->routematch->getParameter('node');
       if ($node instanceof \Drupal\node\NodeInterface) {
         // You can get nid and anything else you need from the node object.
         $nid = $node->id();

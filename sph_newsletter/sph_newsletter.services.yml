@@ -2,7 +2,7 @@ services:
   sph_newsletter.emarsys_services:
     class: Drupal\sph_newsletter\Services\EmarsysService
     autowire: true
-    arguments: ['@config.factory', '@messenger', '@http_client', '@request_stack']
+    arguments: ['@config.factory', '@messenger', '@http_client', '@request_stack', '@entity_type.manager']
   sph_newsletter.hook_form_alter:
     class: Drupal\sph_newsletter\EventSubscriber\NewsletterEventSubscriber
     tags:

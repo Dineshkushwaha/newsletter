@@ -4,8 +4,8 @@ package: Common
 type: module
 core: 8.x
 dependencies:
-  - menu_ui
-  - node_title_help_text
-  - scheduler
-  - hook_event_dispatcher
-  - core_event_dispatcher
+  - drupal:menu_ui
+  - drupal:node_title_help_text
+  - drupal:scheduler
+  - drupal:hook_event_dispatcher
+  - drupal:core_event_dispatcher
