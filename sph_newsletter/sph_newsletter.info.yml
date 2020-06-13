@@ -7,5 +7,7 @@ dependencies:
   - menu_ui
   - node_title_help_text
   - scheduler
+  - media
+  - node
+  - user
   - hook_event_dispatcher
-  - core_event_dispatcher

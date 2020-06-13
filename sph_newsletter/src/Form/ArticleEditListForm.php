@@ -2,12 +2,12 @@
 
 namespace Drupal\sph_newsletter\Form;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
-use Drupal\node\Entity\Node;
-use Drupal\media\Entity\Media;
-use Drupal\file\Entity\File;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Routing\CurrentRouteMatch;
 
 
 /**
@@ -19,6 +19,50 @@ class ArticleEditListForm extends FormBase {
    * Queue article settings
    */
   const SETTINGS = 'queArticle.settings';
+
+  protected $routematch;
+
+  /**
+   * The storage handler class for nodes.
+   *
+   * @var \Drupal\node\NodeStorage
+   */
+  protected $nodeStorage;
+
+  /**
+   * The storage handler class for files.
+   *
+   * @var \Drupal\file\FileStorage
+   */
+  protected $fileStorage;
+
+  /**
+   * The storage handler class for media.
+   *
+   * @var \Drupal\media\MediaStorage
+   */
+  protected $mediaStorage;
+
+  /**
+   * ArticleEditListForm constructor.
+   */
+  public function __construct(CurrentRouteMatch $route_match, EntityTypeManagerInterface $entity) {
+    $this->routematch = $route_match;
+    $this->nodeStorage = $entity->getStorage('node');
+    $this->fileStorage = $entity->getStorage('file');
+    $this->mediaStorage = $entity->getStorage('media');
+  }
+
+  /**
+   * @return FormBase|ArticleEditListForm
+   */
+  public static function create(ContainerInterface $container)
+  {
+    return new static(
+        $container->get('current_route_match'),
+        $container->get('entity_type.manager')
+    );
+  }
 
   /**
    * {@inheritDoc}
@@ -33,8 +77,8 @@ class ArticleEditListForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state)
   {
-    $nid = \Drupal::routeMatch()->getParameter('nid');
-    $node = Node::load($nid);
+    $nid = $this->routematch->getParameter('nid');
+    $node = $this->nodeStorage->load($nid);
     //Get the Queue articles from the node
     $queueArticles = $node->get('field_queue_articles')->getValue();
     $config = $this->config(static::SETTINGS);
@@ -47,17 +91,17 @@ class ArticleEditListForm extends FormBase {
         '#tree' => TRUE,
     ];
     foreach ($queueArticles as $articles) {
-      $node = Node::load($articles['target_id']);
+      $node = $this->nodeStorage->load($articles['target_id']);
       $title = $node->getTitle();
       $body = $node->field_subheadline->value;
       $articleMedia = $node->get('field_media')->getValue();
-      $media = Media::load($articleMedia[0]['target_id']);
+      $media = $this->mediaStorage->load($articleMedia[0]['target_id']);
       $fid = $media->field_media_image->target_id;
       $config_fid = $config->get($nid .'_'. $articles['target_id'] . '_media');
-      if (isset($config_fid)) {
-        $file = File::load($config_fid[0]);
+      if (!empty($config_fid)) {
+        $file = $this->fileStorage->load($config_fid[0]);
       } else {
-        $file = File::load($fid);
+        $file = $this->fileStorage->load($fid);
       }
       $url = $file->url();
 

@@ -2,12 +2,12 @@
 
 namespace Drupal\sph_newsletter\Form;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\node\Entity\Node;
 use Drupal\Core\Url;
-use Drupal\media\Entity\Media;
-use Drupal\file\Entity\File;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Drupal\Core\Routing\CurrentRouteMatch;
 
 /**
  * Class ArticleEditConfigForm
@@ -18,6 +18,50 @@ class ArticleEditConfigForm extends ConfigFormBase {
    * Queue Article settings.
    */
   const SETTINGS = 'queArticle.settings';
+
+  protected $routematch;
+
+  /**
+   * The storage handler class for nodes.
+   *
+   * @var \Drupal\node\NodeStorage
+   */
+  protected $nodeStorage;
+
+  /**
+   * The storage handler class for files.
+   *
+   * @var \Drupal\file\FileStorage
+   */
+  protected $fileStorage;
+
+  /**
+   * The storage handler class for media.
+   *
+   * @var \Drupal\media\MediaStorage
+   */
+  protected $mediaStorage;
+
+  /**
+   * ArticleEditListForm constructor.
+   */
+  public function __construct(CurrentRouteMatch $route_match, EntityTypeManagerInterface $entity) {
+    $this->routematch = $route_match;
+    $this->nodeStorage = $entity->getStorage('node');
+    $this->fileStorage = $entity->getStorage('file');
+    $this->mediaStorage = $entity->getStorage('media');
+  }
+
+  /**
+   * @return FormBase|ArticleEditListForm
+   */
+  public static function create(ContainerInterface $container)
+  {
+    return new static(
+        $container->get('current_route_match'),
+        $container->get('entity_type.manager')
+    );
+  }
 
   /**
    * {@inheritDoc}
@@ -41,9 +85,9 @@ class ArticleEditConfigForm extends ConfigFormBase {
    * {@inheritDoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $nid = \Drupal::routeMatch()->getParameter('nid');
-    $id = \Drupal::routeMatch()->getParameter('id');
-    $node = Node::load($id);
+    $nid = $this->routematch->getParameter('nid');
+    $id = $this->routematch->getParameter('id');
+    $node = $this->nodeStorage->load($id);
 
     $form['article_data'] = [
         '#type' => 'details',
@@ -54,10 +98,8 @@ class ArticleEditConfigForm extends ConfigFormBase {
     $title = $node->getTitle();
     $body = $node->field_subheadline->value;
     $articleMedia = $node->get('field_media')->getValue();
-    $media = Media::load($articleMedia[0]['target_id']);
+    $media = $this->mediaStorage->load($articleMedia[0]['target_id']);
     $fid = $media->field_media_image->target_id;
-    $file = File::load($fid);
-    $url = $file->url();
 
     $config = $this->config(static::SETTINGS);
     $form['article_data'][$nid .'_'. $id . '_nid'] = [
@@ -77,11 +119,6 @@ class ArticleEditConfigForm extends ConfigFormBase {
         '#title' => t('Queue Article summary'),
         '#default_value' => !empty($config->get($nid .'_'. $id . '_body')) ? $config->get($nid .'_'. $id . '_body') : $body,
         '#description' => t("Summary description"),
-    ];
-    $form['article_data'][$nid .'_'. $id . '_media'] = [
-        '#type' => 'markup',
-        '#title' => t('Queue Article summary'),
-        '#markup' => '<img src="'. $url .'" alt="picture">',
     ];
     $validators = [
       'file_validate_extensions' => ['png jpeg jpg'],
@@ -116,7 +153,7 @@ class ArticleEditConfigForm extends ConfigFormBase {
         if (is_array($key)) {
           $fid = (int)reset($value);
           if($fid) {
-            $file = File::load($fid);
+            $file = $this->fileStorage->load($fid);
             if (!$file->isPermanent()) {
               $file->setPermanent();
             }

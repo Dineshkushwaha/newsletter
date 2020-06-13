@@ -6,6 +6,7 @@ services:
     class: Drupal\sph_newsletter\EventSubscriber\NewsletterEventSubscriber
     tags:
       - { name: 'event_subscriber' }
+    arguments: ['@current_route_match']
   sph_newsletter.html_output:
     class: Drupal\sph_newsletter\Services\HtmlOutput
     arguments: ['@entity_type.manager']
