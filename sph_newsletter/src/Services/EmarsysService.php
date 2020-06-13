@@ -37,7 +37,6 @@ class EmarsysService {
    * {@inheritDoc}
    */
   public function emarsysNewsletter($emarsysValues) {
-
     //Emarsys API details
     $newsLetterId = '';
     $emarsys_api_env = $this->config->get('sph_newsletter.emarsys_api_env');
@@ -50,18 +49,15 @@ class EmarsysService {
       'filter_id' => $emarsysValues['filter'],
     ];
 
-
     if (($emarsysValues['action'] === 'launch') || ($emarsysValues['action'] === 'preview_email' && empty($preview_campaign))) {
       $campaign_content = $this->newsLetterData($emarsys_api_env . "/api/v2/email/", $emarsysValues, 'POST');
       $newsLetterId = $campaign_content->data->id;
     }
 
-
     //Update the preview campaign if session campaign already present
     if ($emarsysValues['action'] === 'preview_email' && !empty($preview_campaign)) {
       $this->newsLetterData($emarsys_api_env . "/api/v2/email/" . $preview_campaign . "/patch", $emarsysValues, 'POST');
     }
-
 
     // If email campaign was created.
     if (isset($newsLetterId) || !empty($preview_campaign)) {
@@ -90,7 +86,7 @@ class EmarsysService {
   }
 
   /**
-   * Implements curl method.
+   * Implements guzzle method.
    */
   public function newsLetterData($url, $param = NULL, $method = NULL) {
     //Emarsys API details

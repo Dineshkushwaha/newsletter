@@ -17,7 +17,7 @@ function sph_newsletter_theme($existing, $type, $theme, $path) {
  * Implement the hook_views_pre_render()
  */
 function sph_newsletter_views_pre_render(\Drupal\views\ViewExecutable $view) {
-  if($view->id() == 'lifestyle_view'){
+  if($view->id() === 'newsletter'){
     // Get the node id from the URL
     $node = \Drupal::routeMatch()->getParameter('node');
     if ($node instanceof \Drupal\node\NodeInterface) {
@@ -41,7 +41,7 @@ function sph_newsletter_views_pre_render(\Drupal\views\ViewExecutable $view) {
       $media = Drupal\media\Entity\Media::load($image_field['target_id']);
       $fid = $media->field_media_image->target_id;
       $config_fid = $config->get($id .'_'. $nid . '_media');
-      if (isset($config_fid)) {
+      if (isset($config_fid) && !empty($config_fid)) {
         $media->field_media_image->target_id = $config_fid[0];
       } else {
         $media->field_media_image->target_id = $fid;
