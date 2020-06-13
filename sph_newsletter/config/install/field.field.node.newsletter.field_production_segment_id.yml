@@ -10,7 +10,7 @@ entity_type: node
 bundle: newsletter
 label: 'Production Segment Id'
 description: ''
-required: false
+required: true
 translatable: false
 default_value: {  }
 default_value_callback: ''
