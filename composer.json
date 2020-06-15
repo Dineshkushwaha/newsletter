@@ -1,23 +1,21 @@
 {
   "name": "sphtech/sph_newsletter",
   "description": "SPH Newsletter is used by Editors to send Daily newsletter",
-  "type": "drupal-module",
-  "keywords": ["Drupal"],
-  "homepage": "https://github.com/Dineshkushwaha/newsletter",
-  "support": {
-    "issues": "https://github.com/Dineshkushwaha/newsletter/issues",
-    "source": "https://github.com/Dineshkushwaha/newsletter"
-  },
+  "type": "project",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:Dineshkushwaha/newsletter.git"
+    }
+  ],
   "require": {
     "php": ">=7.0.0",
     "drupal/hook_event_dispatcher": "^2.01",
-    "pelago/emogrifiere": "v4.0",
+    "pelago/emogrifier": "v4.0",
     "drupal/core": ">=8.5.0"
-  },
-  "repositories": {
-    "drupal": {
-      "type": "composer",
-      "url": "https://packages.drupal.org/8"
-    }
   }
 }
