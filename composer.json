@@ -3,10 +3,10 @@
   "description": "SPH Newsletter is used by Editors to send Daily newsletter",
   "type": "drupal-module",
   "keywords": ["Drupal"],
-  "homepage": "https://github.com/SPHTech/sph_newsletter",
+  "homepage": "https://github.com/Dineshkushwaha/newsletter",
   "support": {
-    "issues": "https://github.com/SPHTech/sph_newsletter/issues",
-    "source": "https://github.com/SPHTech/sph_newsletter"
+    "issues": "https://github.com/Dineshkushwaha/newsletter/issues",
+    "source": "https://github.com/Dineshkushwaha/newsletter"
   },
   "require": {
     "php": ">=7.0.0",
