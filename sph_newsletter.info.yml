@@ -3,6 +3,7 @@ description: 'Sends Newsletter using NewsletterContent Type to Emarsys'
 package: Common
 type: module
 core: 8.x
+version: 1.0
 dependencies:
   - menu_ui
   - node_title_help_text
