@@ -13,5 +13,11 @@
     "drupal/hook_event_dispatcher": "^2.01",
     "pelago/emogrifiere": "v4.0",
     "drupal/core": ">=8.5.0"
+  },
+  "repositories": {
+    "drupal": {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    }
   }
 }
