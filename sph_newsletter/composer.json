@@ -1,7 +1,8 @@
 {
   "name": "sphtech/sph_newsletter",
   "description": "SPH Newsletter is used by Editors to send Daily newsletter",
-  "homepage": "https://github.com/SPHTech/sph_newsletter",
+  "homepage": "https://github.com/Dineshkushwaha/newsletter",
+  "version": "1.0",
   "authors": [
     {
       "name": "Dinesh Kushwaha",
