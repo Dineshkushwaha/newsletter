@@ -2,7 +2,7 @@
   "name": "sphtech/sph_newsletter",
   "description": "SPH Newsletter is used by Editors to send Daily newsletter",
   "type": "project",
-  "version": 1,
+  "version": "1.0",
   "repositories": [
     {
       "type": "composer",
