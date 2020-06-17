@@ -95,9 +95,13 @@ class ArticleEditListForm extends FormBase {
       $node = $this->nodeStorage->load($articles['target_id']);
       $title = $node->getTitle();
       $body = $node->field_subheadline->value;
-      $articleMedia = $node->get('field_media')->getValue();
-      $media = $this->mediaStorage->load($articleMedia[0]['target_id']);
-      $fid = $media->field_media_image->target_id;
+
+      $media = $node->field_media->entity;
+      if (!empty($media)) {
+        $fid = $media->field_media_image->target_id;
+      } else {
+        $fid = '';
+      }
       $config_fid = $config->get($nid .'_'. $articles['target_id'] . '_media');
       if (!empty($config_fid)) {
         $file = $this->fileStorage->load($config_fid[0]);
