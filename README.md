@@ -1,6 +1,6 @@
 # SPH Newsletter
 
-Installation steps: 
+## Installation steps: 
 
 1) Run Composer install which will add the Emogrifier Libary dependency &
 hook_event_dispatcher module.
@@ -8,7 +8,7 @@ hook_event_dispatcher module.
 2) Enable hook_event_dispatcher module.
 Enable sub module core_event_dispatcher
 
-3) We have stored the Emarsys credentials in config folder
+3) We have created the file to store Emarsys credentials in config folder
 with name sph_newsletter.settings.yml. You can add the required details and proceed with the installation.
 
 
@@ -23,6 +23,11 @@ Emarsys API Param.
 Newsletter. We have provide the flexibility to change the title, summary and image. (Only applicable to Newsletter).
 6) Css File Name field is to provide the css file name.
 For eg : newsletter. Do not include .css in the file name.
+
+
+## Community
+
+sph_newsletter master branch is released at a stable state, but with mileage to go. We are open to pull requests. Please first discuss your intentions via [Issues](https://github.com/sphtech/sph_newsletter/issues).
 
 
 ## Maintainers

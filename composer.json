@@ -1,0 +1,22 @@
+{
+  "name": "sphtech/sph_newsletter",
+  "description": "SPH Newsletter is used by Editors to send Daily newsletter",
+  "type": "project",
+  "version": "1.0",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://packages.drupal.org/8"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:Dineshkushwaha/newsletter.git"
+    }
+  ],
+  "require": {
+    "php": ">=7.0.0",
+    "drupal/hook_event_dispatcher": "^2.01",
+    "pelago/emogrifier": "v4.0",
+    "drupal/core": ">=8.5.0"
+  }
+}
