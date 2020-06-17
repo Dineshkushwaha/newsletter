@@ -91,6 +91,7 @@ class ArticleEditListForm extends FormBase {
         '#tree' => TRUE,
     ];
     foreach ($queueArticles as $articles) {
+      $url = '';
       $node = $this->nodeStorage->load($articles['target_id']);
       $title = $node->getTitle();
       $body = $node->field_subheadline->value;
@@ -100,10 +101,12 @@ class ArticleEditListForm extends FormBase {
       $config_fid = $config->get($nid .'_'. $articles['target_id'] . '_media');
       if (!empty($config_fid)) {
         $file = $this->fileStorage->load($config_fid[0]);
-      } else {
+      } elseif (!empty($fid))  {
         $file = $this->fileStorage->load($fid);
       }
-      $url = $file->url();
+      if (!empty($config_fid) || !empty($fid)) {
+        $url = $file->url();
+      }
 
       $form['article_data'][$articles['target_id']]['id'] = array(
           '#plain_text' => $articles['target_id'],
